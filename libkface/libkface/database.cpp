@@ -210,7 +210,7 @@ QList<Face> Database::detectFaces(const Image& image)
     return faceList;
 }
 
-bool Database::updateFaces(QList<Face>& faces)
+bool Database::updateFaces(QList<Face>& faces,QImage ImageToTld)
 {
     if(faces.isEmpty())
         return false;
@@ -222,14 +222,15 @@ bool Database::updateFaces(QList<Face>& faces)
         if(d->hash.contains(face.name()))
         {
             face.setId(d->hash[face.name()]);
-            cout << d->hash[face.name()] << endl;
+            //cout << face.toFace().getX1() << endl;
         }
-        else
+        else if(face.name() != NULL)
         {
+            QImage faceToTld = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
+                                               face.toFace().getWidth(),face.toFace().getHeight());
             libface::Tldface *tmpTLD = new libface::Tldface;
-            tmpTLD->writeModelTofile(cvLoadImage("/home/mmh/hmm.jpg"),(face.name().toStdString().c_str()));
-        //    tmpTLD->writeModelTofile(&(tmpTLD->QImage2IplImage(face.image().toQImage())),(face.name().toStdString().c_str()));
-        //    delete tmpTLD;
+            tmpTLD->writeModelTofile(&(tmpTLD->QImage2IplImage(faceToTld)),(face.name().toStdString().c_str()));
+            delete tmpTLD;
         }
         faceVec.push_back(face.toFace(Face::ShallowCopy));
     }
@@ -267,7 +268,7 @@ bool Database::updateFaces(QList<Face>& faces)
     return true;
 }
 
-QList<double> Database::recognizeFaces(QList<Face>& faces)
+QList<double> Database::recognizeFaces(QList<Face>& faces,QImage imageToTld)
 {
     QList<double> closeness;
     if(faces.isEmpty() || !d->libface->count())
@@ -284,6 +285,7 @@ QList<double> Database::recognizeFaces(QList<Face>& faces)
     std::vector< std::pair<int, double> > result;
     try
     {
+
         result = d->libface->recognise(&faceVec);
     }
     catch (cv::Exception& e)
@@ -306,11 +308,30 @@ QList<double> Database::recognizeFaces(QList<Face>& faces)
         while(it.hasNext())
         {
             it.next();
+            cout << it.key().toStdString() << endl;
             if(it.value() == faces[i].id())
             {
                 faces[i].setName(it.key());
                 break;
             }
+        }
+        vector< string> namesInDatabase;
+        vector<float> recognitionConfidence;
+
+        foreach(Face face, faces)//campare for all combinations
+        {
+            it.toFront();
+            while(it.hasNext())
+            {
+                QImage faceToTld = imageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
+                                                   face.toFace().getWidth(),face.toFace().getHeight());
+                libface::Tldface *tmpTLD = new libface::Tldface;
+                recognitionConfidence.push_back(tmpTLD->getRecognitionConfidence(&(tmpTLD->QImage2IplImage(faceToTld)),it.key().toStdString().c_str()));
+                namesInDatabase.push_back(it.key().toStdString());
+                it.next();
+                delete tmpTLD;
+            }
+
         }
     }
     return closeness;

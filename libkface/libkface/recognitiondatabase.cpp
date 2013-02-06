@@ -194,8 +194,9 @@ bool RecognitionDatabase::updateFaces(QList<Face>& faces)
 {
     if (!d)
         return false;
+    QImage noUse;
     QMutexLocker lock(&d->mutex);
-    return d->database()->updateFaces(faces);
+    return d->database()->updateFaces(faces,noUse);
 }
 
 QList<double> RecognitionDatabase::recognizeFaces(QList<Face>& faces)
@@ -203,7 +204,8 @@ QList<double> RecognitionDatabase::recognizeFaces(QList<Face>& faces)
     if (!d)
         return QList<double>();
     QMutexLocker lock(&d->mutex);
-    return d->database()->recognizeFaces(faces);
+    QImage dummyImage;
+    return d->database()->recognizeFaces(faces,dummyImage);
 }
 
 void RecognitionDatabase::saveConfig()

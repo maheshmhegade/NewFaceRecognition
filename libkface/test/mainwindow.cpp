@@ -165,6 +165,7 @@ void MainWindow::openConfig()
 void MainWindow::detectFaces()
 {
     currentFaces.clear();
+
     currentFaces = database->detectFaces(currentPhoto);
     Face face;
     kDebug() << "libkface detected : " << currentFaces.size() << " faces.";
@@ -199,7 +200,7 @@ void MainWindow::updateConfig()
         }
     }
 
-    if( database->updateFaces(updateList) )
+    if( database->updateFaces(updateList,currentPhoto) )
     {
         kDebug() << "Trained";
         database->saveConfig();
@@ -230,7 +231,7 @@ void MainWindow::clearScene()
 void MainWindow::recognise()
 {
     printf("1\n");
-    QList<double> closeness = database->recognizeFaces(currentFaces);
+    QList<double> closeness = database->recognizeFaces(currentFaces,currentPhoto);
 
     if(closeness.isEmpty())
         return;

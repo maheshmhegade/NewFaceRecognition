@@ -111,7 +111,7 @@ public:
      * @param faces A QList of Face's, which hold the face image too, for updating the DB.
      * @return False if no faces were updated, due to an argument of size zero
      */
-    bool updateFaces(QList<Face>& faces);
+    bool updateFaces(QList<Face>& faces, QImage ImageToTld);
 
     /**
      * Clear the training database for a single name or id.
@@ -128,7 +128,7 @@ public:
      * @return A QList of "closeness" of recognized faces, in the same order as the argument;
      * or an empty list, if an error occurred or no recognition data is available.
      */
-    QList<double> recognizeFaces(QList<Face>& faces);
+    QList<double> recognizeFaces(QList<Face>& faces, QImage imageToTld);
 
     /**
      * Returns the directory path of the config file

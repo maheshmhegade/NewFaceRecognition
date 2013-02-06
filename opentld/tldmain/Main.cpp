@@ -10,7 +10,7 @@ using namespace std;
 using namespace tld;
 using namespace cv;
 
-void Main::doWork(IplImage* img,const char* faceModelFileName,int mode)
+void Main::doWork(IplImage* img,const char* faceModelFileName,int mode,float *recognitionCaonfidence)
 {
     Mat grey(img->height, img->width, CV_8UC1);
 
@@ -39,6 +39,7 @@ void Main::doWork(IplImage* img,const char* faceModelFileName,int mode)
         tld->readFromFile(faceModelFileName);//modelPath);
         cvtColor(cv::Mat(img), grey, CV_BGR2GRAY);
         tld->processImage(img);
+        recognitionCaonfidence = &tld->currConf;
         std::cout<< tld->currConf<<std::endl;
     }
     else

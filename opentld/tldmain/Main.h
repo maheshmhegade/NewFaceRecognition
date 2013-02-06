@@ -87,7 +87,7 @@ public:
         imAcqFree(imAcq);
     }
 
-    void doWork(IplImage* , const char*, int mode);
+    void doWork(IplImage* , const char*, int mode, float *recognitionCaonfidence);
 };
 
 #endif /* MAIN_H_ */

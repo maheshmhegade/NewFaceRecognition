@@ -25,7 +25,7 @@ class Tldface
 
     int updateDatabase(IplImage* ,const char *);
 
-    double recognitionConfidence(IplImage* ,const char *);
+    float getRecognitionConfidence(IplImage* ,const char *);
 
     int writeModelTofile(IplImage* ,const char *);
 

@@ -14,17 +14,20 @@ libface::Tldface::Tldface()
 
 libface::Tldface::~Tldface()
 {
-    delete main;
+ //   delete main;
 }
 
 int libface::Tldface::writeModelTofile(IplImage *inputImage, const char *faceModelFilename)
 {
-    main->doWork(inputImage,faceModelFilename,1);
+    float *dummyVariable;
+    main->doWork(inputImage,faceModelFilename,1,dummyVariable);
 }
 
-double libface::Tldface::recognitionConfidence(IplImage *inputImage, const char *faceModelFilename)
+float libface::Tldface::getRecognitionConfidence(IplImage *inputImage, const char *faceModelFilename)
 {
-    main->doWork(inputImage,faceModelFilename,2);
+    float *recognitionConfidence;
+    main->doWork(inputImage,faceModelFilename,2,recognitionConfidence);
+    return (*recognitionConfidence);
 }
 
 int libface::Tldface::updateDatabase(IplImage *inputImage, const char *faceModelFilename)
