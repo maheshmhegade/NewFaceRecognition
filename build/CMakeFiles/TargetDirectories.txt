@@ -1,9 +1,0 @@
-/home/mmh/softwares/FaceRecognition/build/opentld/cvblobs/CMakeFiles/cvblobs.dir
-/home/mmh/softwares/FaceRecognition/build/CMakeFiles/kface.dir
-/home/mmh/softwares/FaceRecognition/build/CMakeFiles/kface_automoc.dir
-/home/mmh/softwares/FaceRecognition/build/opentld/libconfig/CMakeFiles/libconfig.dir
-/home/mmh/softwares/FaceRecognition/build/CMakeFiles/libfaceGUI.dir
-/home/mmh/softwares/FaceRecognition/build/CMakeFiles/libfaceGUI_automoc.dir
-/home/mmh/softwares/FaceRecognition/build/opentld/libopentld/CMakeFiles/libopentld.dir
-/home/mmh/softwares/FaceRecognition/build/opentld/tldmain/CMakeFiles/tldmain.dir
-/home/mmh/softwares/FaceRecognition/build/CMakeFiles/uninstall.dir

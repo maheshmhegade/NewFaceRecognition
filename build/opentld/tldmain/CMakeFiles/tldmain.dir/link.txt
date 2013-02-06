@@ -1,2 +1,0 @@
-/usr/bin/ar cr ../../lib/libtldmain.a  CMakeFiles/tldmain.dir/Config.cpp.o CMakeFiles/tldmain.dir/Gui.cpp.o CMakeFiles/tldmain.dir/Main.cpp.o CMakeFiles/tldmain.dir/Settings.cpp.o
-/usr/bin/ranlib ../../lib/libtldmain.a
