@@ -1,0 +1,15 @@
+add_library(libconfig
+    grammar.c
+    libconfig.c
+    libconfigcpp.cc
+    scanctx.c
+    scanner.c
+    strbuf.c
+    grammar.h
+    libconfig.h
+    libconfig.hh
+    parsectx.h
+    scanctx.h
+    scanner.h
+    strbuf.h
+    wincompat.h) 

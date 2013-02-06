@@ -1,0 +1,5 @@
+# Hashes of file build rules.
+2e52f87bef107a283883a995047d5815 CMakeFiles/kface_automoc
+16368978ddc15cc5309ddaef42b64198 CMakeFiles/libfaceGUI_automoc
+5c1177ed3bb6afda22422079d60d17b3 CMakeFiles/uninstall
+101dba1debf960d30da394116f848f67 ui_mainwindow.h
