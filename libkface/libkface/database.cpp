@@ -303,37 +303,49 @@ QList<double> Database::recognizeFaces(QList<Face>& faces,QImage imageToTld)
         closeness.append(result.at(i).second);
 
         // Locate the name from the hash, pity we don't have a bi-directional hash in Qt
-        QHashIterator<QString, int> it(d->hash);
+        /*QHashIterator<QString, int> it(d->hash);
         it.toFront();
         while(it.hasNext())
         {
             it.next();
-            cout << it.key().toStdString() << endl;
+           cout << it.key().toStdString() << endl;
             if(it.value() == faces[i].id())
             {
                 faces[i].setName(it.key());
                 break;
             }
-        }
+        }*/
         vector< string> namesInDatabase;
         vector<float> recognitionConfidence;
 
-        foreach(Face face, faces)//campare for all combinations
+        QHashIterator<QString, int> itp(d->hash);
+        int count = 0;
+        while(itp.hasNext())
         {
-            it.toFront();
-            while(it.hasNext())
-            {
-                QImage faceToTld = imageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
-                                                   face.toFace().getWidth(),face.toFace().getHeight());
-                libface::Tldface *tmpTLD = new libface::Tldface;
-                recognitionConfidence.push_back(tmpTLD->getRecognitionConfidence(&(tmpTLD->QImage2IplImage(faceToTld)),it.key().toStdString().c_str()));
-                namesInDatabase.push_back(it.key().toStdString());
-                it.next();
-                delete tmpTLD;
+           itp.next();
+           QImage faceToTld = imageToTld.copy(faces[i].toFace().getX1(),faces[i].toFace().getY1(),
+                                              faces[i].toFace().getWidth(),faces[i].toFace().getHeight());
+           libface::Tldface *tmpTLD = new libface::Tldface;
+           cout << itp.key().toStdString().c_str() << endl;
+           recognitionConfidence.push_back((tmpTLD->getRecognitionConfidence(&(tmpTLD->QImage2IplImage(faceToTld)),(itp.key().toStdString().c_str()))));
+           namesInDatabase.push_back(itp.key().toStdString());
+           delete tmpTLD;
+           cout << recognitionConfidence[count] << endl;
+           count ++;
+         }
+        int maxConfIndex = NULL;
+        float maxConfidence = recognitionConfidence[0];
+        for(int tmpInt = 0; tmpInt <= count ; tmpInt++ )
+        {
+            if(recognitionConfidence[tmpInt] > maxConfidence)
+            {   maxConfIndex = tmpInt;
+               maxConfidence = recognitionConfidence[tmpInt];
             }
-
         }
-    }
+        if(maxConfidence > 0.6 )
+            faces[i].setName(QString::fromStdString(namesInDatabase[maxConfIndex]));
+
+     }
     return closeness;
 }
 

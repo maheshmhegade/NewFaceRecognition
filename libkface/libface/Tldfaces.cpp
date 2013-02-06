@@ -19,15 +19,15 @@ libface::Tldface::~Tldface()
 
 int libface::Tldface::writeModelTofile(IplImage *inputImage, const char *faceModelFilename)
 {
-    float *dummyVariable;
-    main->doWork(inputImage,faceModelFilename,1,dummyVariable);
+    float dummyVariable;
+    main->doWork(inputImage,faceModelFilename,1,&dummyVariable);
 }
 
 float libface::Tldface::getRecognitionConfidence(IplImage *inputImage, const char *faceModelFilename)
 {
-    float *recognitionConfidence;
-    main->doWork(inputImage,faceModelFilename,2,recognitionConfidence);
-    return (*recognitionConfidence);
+    float recognitionConfidence;
+    main->doWork(inputImage,faceModelFilename,2,&recognitionConfidence);
+    return recognitionConfidence;
 }
 
 int libface::Tldface::updateDatabase(IplImage *inputImage, const char *faceModelFilename)

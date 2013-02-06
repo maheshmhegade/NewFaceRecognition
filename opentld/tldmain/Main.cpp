@@ -39,8 +39,7 @@ void Main::doWork(IplImage* img,const char* faceModelFileName,int mode,float *re
         tld->readFromFile(faceModelFileName);//modelPath);
         cvtColor(cv::Mat(img), grey, CV_BGR2GRAY);
         tld->processImage(img);
-        recognitionCaonfidence = &tld->currConf;
-        std::cout<< tld->currConf<<std::endl;
+        (*recognitionCaonfidence) = tld->currConf;
     }
     else
 
