@@ -2,10 +2,9 @@
 using namespace std;
 libface::Tldface::Tldface()
 {
-    Main* main = new Main();
-    Config config;
-    ImAcq *imAcq = imAcqAlloc();
-    Gui *gui = new Gui();
+    main = new Main();
+    imAcq = imAcqAlloc();
+    gui = new Gui();
     main->gui = gui;
     main->imAcq = imAcq;
     config.configure(main);
@@ -15,13 +14,11 @@ libface::Tldface::Tldface()
 
 libface::Tldface::~Tldface()
 {
-    delete gui;
     delete main;
 }
 
 int libface::Tldface::writeModelTofile(IplImage *inputImage, const char *faceModelFilename)
 {
-    cout << "jok" << endl;
     main->doWork(inputImage,faceModelFilename,1);
 }
 

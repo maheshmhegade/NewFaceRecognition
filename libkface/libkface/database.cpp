@@ -227,6 +227,7 @@ bool Database::updateFaces(QList<Face>& faces)
         else
         {
             libface::Tldface *tmpTLD = new libface::Tldface;
+            tmpTLD->writeModelTofile(cvLoadImage("/home/mmh/hmm.jpg"),(face.name().toStdString().c_str()));
         //    tmpTLD->writeModelTofile(&(tmpTLD->QImage2IplImage(face.image().toQImage())),(face.name().toStdString().c_str()));
         //    delete tmpTLD;
         }

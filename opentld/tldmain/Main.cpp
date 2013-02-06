@@ -13,11 +13,9 @@ using namespace cv;
 void Main::doWork(IplImage* img,const char* faceModelFileName,int mode)
 {
     Mat grey(img->height, img->width, CV_8UC1);
-    cvNamedWindow("jok");
-    cvShowImage("jok",img);
-    cvWaitKey(0);
-    cvtColor(cv::Mat(img), grey,0);// CV_BGR2GRAY);
 
+    cvtColor(cv::Mat(img), grey,CV_BGR2GRAY);// CV_BGR2GRAY);
+    //imshow("ty",im);
     tld->detectorCascade->imgWidth = grey.cols;
     tld->detectorCascade->imgHeight = grey.rows;
     tld->detectorCascade->imgWidthStep = grey.step;
@@ -30,13 +28,9 @@ void Main::doWork(IplImage* img,const char* faceModelFileName,int mode)
         initialBB[2] = img->width-5;
         initialBB[3] = img->height-5;
         Rect bb = tldArrayToRect(initialBB);
-
         tld->selectObject(grey, &bb);
-        cout << "he he" << endl;
+
         cvtColor(cv::Mat(img), grey, CV_BGR2GRAY);
-
-        tld->processImage(img);
-
         tld->writeToFile(faceModelFileName);
     }
 
