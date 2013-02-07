@@ -79,9 +79,9 @@ public:
 
     // OpenCV compatibility methods
 
-    std::vector<int> update(const IplImage* img, std::vector<Face>* faces, int scaleFactor = 1);
-    std::vector<Face> detectFaces(const IplImage* img, const CvSize& originalSize);
-    std::vector<std::pair<int, double> > recognise(const IplImage* img, std::vector<Face>* faces_p, int scaleFactor=1);
+    std::vector<int> update(const IplImage* const img, std::vector<Face>* const faces, int scaleFactor = 1);
+    std::vector<Face> detectFaces(const IplImage* const img, const CvSize& originalSize);
+    std::vector<std::pair<int, double> > recognise(const IplImage* const img, std::vector<Face>* const faces_p, int scaleFactor=1);
 
     // API-agnostic methods
 
@@ -96,7 +96,8 @@ public:
      * @return Vector of Face objects
      */
     std::vector<Face> detectFaces(const std::string& filename, int scaleFactor=1);
-    std::vector<Face> detectFaces(const char* image, int width , int height , int step , int depth = IPL_DEPTH_8U, int channels = 1, int scaleFactor=1 );
+    std::vector<Face> detectFaces(const char* const image, int width, int height, int step,
+                                  int depth = IPL_DEPTH_8U, int channels = 1, int scaleFactor=1);
 
     /** Method to update the library with faces from the picture specified.
      *
@@ -107,8 +108,9 @@ public:
      *
      * @return o is return if update was successful.
      */
-    std::vector<int> update(const std::string& filename, std::vector<Face>* faces=NULL, int scaleFactor=1);
-    std::vector<int> update(const char* image, std::vector<Face>* faces, int width , int height , int step , int depth = IPL_DEPTH_8U, int channels = 1, int scaleFactor=1);
+    std::vector<int> update(const std::string& filename, std::vector<Face>* const faces=NULL, int scaleFactor=1);
+    std::vector<int> update(const char* image, std::vector<Face>* const faces, int width, int height, int step,
+                            int depth = IPL_DEPTH_8U, int channels = 1, int scaleFactor=1);
 
     /** Method to update the library with faces from the picture specified.
      *
@@ -119,7 +121,7 @@ public:
      *
      * @return o is return if update was successful.
      */
-    std::vector<int> update(std::vector<Face>* faces=NULL, int scaleFactor=1);
+    std::vector<int> update(std::vector<Face>* const faces=NULL, int scaleFactor=1);
 
     /**
      *  Method to recognise faces in the given image. The array of faces will be updated with
@@ -131,7 +133,7 @@ public:
      * Default not scaled (1). NOT USED at the moment.
      * @return Vector of integer ID's that best match the input vector of Faces, in same order
      */
-    std::vector<std::pair<int, double> > recognise(const std::string& filename, std::vector<Face>* faces_p, int scaleFactor=1);
+    std::vector<std::pair<int, double> > recognise(const std::string& filename, std::vector<Face>* const faces_p, int scaleFactor=1);
 
     /**
      *  Method to recognise faces in the given image. The array of faces will be updated with
@@ -143,7 +145,9 @@ public:
      * Default not scaled (1). NOT USED at the moment.
      * @return Vector of integer ID's that best match the input vector of Faces, in same order
      */
-    std::vector<std::pair<int, double> > recognise(const char* image, std::vector<Face>* faces_p, int width, int height, int step, int depth = IPL_DEPTH_8U, int channels = 1, int scaleFactor=1);
+    std::vector<std::pair<int, double> > recognise(const char* const image, std::vector<Face>* const faces_p,
+                                                   int width, int height, int step, int depth = IPL_DEPTH_8U,
+                                                   int channels = 1, int scaleFactor=1);
 
     /**
      *  Method to recognise faces in the given image. The array of faces will be updated with
@@ -154,7 +158,7 @@ public:
      * Default not scaled (1). NOT USED at the moment.
      * @return Vector of integer ID's that best match the input vector of Faces, in same order
      */
-    std::vector<std::pair<int, double> > recognise( std::vector<Face>* faces, int scaleFactor =1);
+    std::vector<std::pair<int, double> > recognise( std::vector<Face>* const faces, int scaleFactor =1);
 
     /**
      *  Method for getting the configuration from the face recognition. There is no configuration

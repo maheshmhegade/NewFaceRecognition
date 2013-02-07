@@ -156,13 +156,14 @@ vector<Face> LibFace::detectFaces(const string& filename, int /*scaleFactor*/)
     return d->detectionCore->detectFaces(d->lastImage);
 }
 
-vector<Face> LibFace::detectFaces(const char* arr, int width, int height, int step, int depth, int channels, int /*scaleFactor*/)
+vector<Face> LibFace::detectFaces(const char* const arr, int width, int height, int step,
+                                  int depth, int channels, int /*scaleFactor*/)
 {
     IplImage* const image = LibFaceUtils::charToIplImage(arr, width, height, step, depth, channels);
     return d->detectionCore->detectFaces(image);
 }
 
-vector<Face> LibFace::detectFaces(const IplImage* image, const CvSize& originalSize)
+vector<Face> LibFace::detectFaces(const IplImage* const image, const CvSize& originalSize)
 {
     return d->detectionCore->detectFaces(image, originalSize);
 }
@@ -189,7 +190,7 @@ int LibFace::loadConfig(const map<string, string>& config)
     return result;
 }
 
-vector<pair<int, double> > LibFace::recognise(const string& filename, vector<Face>* faces, int scaleFactor)
+vector<pair<int, double> > LibFace::recognise(const string& filename, vector<Face>* const faces, int scaleFactor)
 {
     IplImage* img                  = cvLoadImage(filename.data(), CV_LOAD_IMAGE_GRAYSCALE); // grayscale
     vector<pair<int, double> > ret = this->recognise(img, faces, scaleFactor);
@@ -197,7 +198,7 @@ vector<pair<int, double> > LibFace::recognise(const string& filename, vector<Fac
     return ret;
 }
 
-vector<pair<int, double> > LibFace::recognise(const IplImage* img, vector<Face>* faces, int /*scaleFactor*/)
+vector<pair<int, double> > LibFace::recognise(const IplImage* const img, vector<Face>* const faces, int /*scaleFactor*/)
 {
     vector<pair<int, double> > result;
 
@@ -257,13 +258,14 @@ vector<pair<int, double> > LibFace::recognise(const IplImage* img, vector<Face>*
     return result;
 }
 
-vector<pair<int, double> > LibFace::recognise(const char* arr, vector<Face>* faces, int width, int height, int step, int depth, int channels, int scaleFactor)
+vector<pair<int, double> > LibFace::recognise(const char* const arr, vector<Face>* const faces, int width, int height, int step, 
+                                              int depth, int channels, int scaleFactor)
 {
     IplImage* const img = LibFaceUtils::charToIplImage(arr, width, height, step, depth, channels);
     return this->recognise(img, faces, scaleFactor);
 }
 
-vector<pair<int, double> > LibFace::recognise(vector<Face>* faces, int /*scaleFactor*/)
+vector<pair<int, double> > LibFace::recognise(vector<Face>* const faces, int /*scaleFactor*/)
 {
     vector<pair<int, double> > result;
 
@@ -342,7 +344,7 @@ int LibFace::train(const string& /*dir*/)
     return result;
 }
 
-std::vector<int> LibFace::update(const IplImage* img, vector<Face>* faces, int /*scaleFactor*/)
+std::vector<int> LibFace::update(const IplImage* const img, vector<Face>* const faces, int /*scaleFactor*/)
 {
     std::vector<int> assignedIDs;
 
@@ -398,13 +400,14 @@ std::vector<int> LibFace::update(const IplImage* img, vector<Face>* faces, int /
     return assignedIDs;
 }
 
-std::vector<int> LibFace::update(const char* arr, vector<Face>* faces, int width, int height, int step, int depth, int channels, int scaleFactor)
+std::vector<int> LibFace::update(const char* const arr, vector<Face>* const faces, int width, int height, int step,
+                                 int depth, int channels, int scaleFactor)
 {
     IplImage* const img = LibFaceUtils::charToIplImage(arr, width, height, step, depth, channels);
     return this->update(img, faces, scaleFactor);
 }
 
-std::vector<int> LibFace::update(const string& filename, vector<Face>* faces, int scaleFactor)
+std::vector<int> LibFace::update(const string& filename, vector<Face>* const faces, int scaleFactor)
 {
     IplImage* img        = cvLoadImage(filename.data(), CV_LOAD_IMAGE_GRAYSCALE); //grayscale
     std::vector<int> ret = this->update(img, faces, scaleFactor);
@@ -412,7 +415,7 @@ std::vector<int> LibFace::update(const string& filename, vector<Face>* faces, in
     return ret;
 }
 
-std::vector<int> LibFace::update(vector<Face>* faces, int /*scaleFactor*/)
+std::vector<int> LibFace::update(vector<Face>* const faces, int /*scaleFactor*/)
 {
     std::vector<int> assignedIDs;
 
