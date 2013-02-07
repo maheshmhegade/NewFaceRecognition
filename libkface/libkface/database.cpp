@@ -319,31 +319,39 @@ QList<double> Database::recognizeFaces(QList<Face>& faces,QImage imageToTld)
         vector<float> recognitionConfidence;
 
         QHashIterator<QString, int> itp(d->hash);
-        int count = 0;
+        int count = -1;
         while(itp.hasNext())
         {
            itp.next();
+
            QImage faceToTld = imageToTld.copy(faces[i].toFace().getX1(),faces[i].toFace().getY1(),
                                               faces[i].toFace().getWidth(),faces[i].toFace().getHeight());
-           libface::Tldface *tmpTLD = new libface::Tldface;
-           cout << itp.key().toStdString().c_str() << endl;
-           recognitionConfidence.push_back((tmpTLD->getRecognitionConfidence(&(tmpTLD->QImage2IplImage(faceToTld)),(itp.key().toStdString().c_str()))));
-           namesInDatabase.push_back(itp.key().toStdString());
-           delete tmpTLD;
-           cout << recognitionConfidence[count] << endl;
-           count ++;
-         }
-        int maxConfIndex = NULL;
-        float maxConfidence = recognitionConfidence[0];
-        for(int tmpInt = 0; tmpInt <= count ; tmpInt++ )
-        {
-            if(recognitionConfidence[tmpInt] > maxConfidence)
-            {   maxConfIndex = tmpInt;
-               maxConfidence = recognitionConfidence[tmpInt];
+           if(itp.key() != NULL)
+           {
+                count ++;
+                libface::Tldface *tmpTLD = new libface::Tldface;
+                cout << "failed" << endl;
+                recognitionConfidence.push_back((tmpTLD->getRecognitionConfidence(&(tmpTLD->QImage2IplImage(faceToTld)),(itp.key().toStdString().c_str()))));
+                namesInDatabase.push_back(itp.key().toStdString());
+
+                delete tmpTLD;
             }
+         }
+        if(count != -1)
+        {
+            int maxConfIndex = 0;
+            float maxConfidence = recognitionConfidence[0];
+            for(int tmpInt = 0; tmpInt <= count ; tmpInt++ )
+            {
+                if(recognitionConfidence[tmpInt] > maxConfidence)
+                {   maxConfIndex = tmpInt;
+                    maxConfidence = recognitionConfidence[tmpInt];
+                }
+            }
+            cout << "executed " << endl;
+            if(maxConfidence > 0.6 )
+                faces[i].setName(QString::fromStdString(namesInDatabase[maxConfIndex]));
         }
-        if(maxConfidence > 0.6 )
-            faces[i].setName(QString::fromStdString(namesInDatabase[maxConfIndex]));
 
      }
     return closeness;
