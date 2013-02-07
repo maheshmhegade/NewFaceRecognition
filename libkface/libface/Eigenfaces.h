@@ -13,7 +13,7 @@
  *
  * @author Copyright (C) 2009-2010 by Alex Jironkin
  *         <a href="alexjironkin at gmail dot com">alexjironkin at gmail dot com</a>
- * @author Copyright (C) 2010 by Gilles Caulier
+ * @author Copyright (C) 2010-2013 by Gilles Caulier
  *         <a href="mailto:caulier dot gilles at gmail dot com">caulier dot gilles at gmail dot com</a>
  *
  * @section LICENSE
@@ -127,8 +127,8 @@ public:
 
 private:
 
-    class EigenfacesPriv;
-    EigenfacesPriv* const d;
+    class Private;
+    Private* const d;
 };
 
 } // namespace libface
