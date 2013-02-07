@@ -32,7 +32,7 @@
 
 // Local includes
 
-#include "libopencv.h"
+#include "kfaceutils.h"
 #include "image.h"
 
 namespace KFaceIface

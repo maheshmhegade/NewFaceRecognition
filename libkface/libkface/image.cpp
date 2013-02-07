@@ -33,10 +33,6 @@
 
 #include <QFile>
 
-// OpenCV includes
-
-#include "libopencv.h"
-
 // Libface includes
 
 #include "../libface/LibFace.h"

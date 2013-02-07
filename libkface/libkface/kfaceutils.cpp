@@ -42,10 +42,6 @@
 
 #include <kdebug.h>
 
-// OpenCV includes
-
-#include "libopencv.h"
-
 namespace KFaceIface
 {
 

@@ -32,7 +32,7 @@
 
 // OpenCV includes
 
-#include "libopencv.h"
+#include "../libface/libopencv.h"
 
 // Qt includes
 

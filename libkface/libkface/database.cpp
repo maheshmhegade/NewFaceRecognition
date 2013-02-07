@@ -41,19 +41,17 @@
 #include <kdebug.h>
 #include <kstandarddirs.h>
 
-// OpenCV includes
-
-#include "libopencv.h"
-
 // Libface includes
 
 #include "../libface/LibFace.h"
 #include "../libface/Face.h"
-using namespace std;
+
 // Local includes
 
 #include "kfaceutils.h"
 #include "image_p.h"
+
+using namespace std;
 
 namespace KFaceIface
 {
