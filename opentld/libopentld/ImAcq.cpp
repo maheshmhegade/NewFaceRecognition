@@ -96,7 +96,7 @@ void imAcqFree(ImAcq *imAcq)
     free(imAcq);
 }
 
-IplImage *imAcqLoadImg(ImAcq *imAcq, char *path)
+IplImage *imAcqLoadImg(ImAcq* /*imAcq*/, char *path)
 {
     IplImage *image = cvLoadImage(path);
 
@@ -109,7 +109,7 @@ IplImage *imAcqLoadImg(ImAcq *imAcq, char *path)
 
 }
 
-IplImage *imAcqLoadFrame(ImAcq *imAcq, int fNo)
+IplImage *imAcqLoadFrame(ImAcq* /*imAcq*/, int fNo)
 {
     char path[255];
     sprintf(path,"%d", fNo);

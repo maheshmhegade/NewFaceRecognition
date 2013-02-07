@@ -2005,6 +2005,8 @@ YY_BUFFER_STATE libconfig_yy_scan_bytes  (yyconst char * yybytes, int  _yybytes_
 
 static void yy_fatal_error (yyconst char* msg , yyscan_t yyscanner)
 {
+    (void)yyscanner;
+
     	(void) fprintf( stderr, "%s\n", msg );
 	exit( YY_EXIT_FAILURE );
 }
@@ -2337,11 +2339,13 @@ static int yy_flex_strlen (yyconst char * s , yyscan_t yyscanner)
 
 void *libconfig_yyalloc (yy_size_t  size , yyscan_t yyscanner)
 {
+    (void)yyscanner;
 	return (void *) malloc( size );
 }
 
 void *libconfig_yyrealloc  (void * ptr, yy_size_t  size , yyscan_t yyscanner)
 {
+    (void)yyscanner;
 	/* The cast to (char *) in the following accommodates both
 	 * implementations that use char* generic pointers, and those
 	 * that use void* generic pointers.  It works with the latter
@@ -2354,6 +2358,7 @@ void *libconfig_yyrealloc  (void * ptr, yy_size_t  size , yyscan_t yyscanner)
 
 void libconfig_yyfree (void * ptr , yyscan_t yyscanner)
 {
+    (void)yyscanner;
 	free( (char *) ptr );	/* see libconfig_yyrealloc() for (char *) cast */
 }
 
