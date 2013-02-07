@@ -99,7 +99,7 @@ public:
      * @return A pair with ID and closeness of the closest face.
      *
      */
-    std::pair<int, float> recognize(IplImage* input);
+    std::pair<int, float> recognize(IplImage* const input);
 
     /**
      * Saves the config is a given directory.

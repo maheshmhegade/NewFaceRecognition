@@ -117,7 +117,7 @@ void Eigenfaces::Private::learn(int index, IplImage* const newFace)
     tempFaces.push_back(newFace);
     tempFaces.push_back(faceImgArr.at(index));
 
-    float* const projectedFace = (float*)malloc(sizeof(float));
+    float* const projectedFace    = (float*)malloc(sizeof(float));
 
     CvSize size=cvSize(FACE_WIDTH, FACE_HEIGHT);
 
@@ -133,7 +133,8 @@ void Eigenfaces::Private::learn(int index, IplImage* const newFace)
     if( !(eigenValues = (float*) cvAlloc( 2*sizeof(float) ) ) )
         cout<<"Problems initializing eigenValues..."<<endl;
 
-    IplImage* pAvgTrainImg = 0;
+    IplImage* pAvgTrainImg        = 0;
+
     //Initialize pointer to the average image
     if( !(pAvgTrainImg = cvCreateImage( size, IPL_DEPTH_32F, 1) ) )
         cout<<"Problems initializing pAvgTrainImg..."<<endl;
@@ -325,7 +326,7 @@ int Eigenfaces::loadConfig(const map<string, string>& c)
     return 0;
 }
 
-pair<int, float> Eigenfaces::recognize(IplImage* input)
+pair<int, float> Eigenfaces::recognize(IplImage* const input)
 {
     if (input == 0)
     {
@@ -363,7 +364,7 @@ pair<int, float> Eigenfaces::recognize(IplImage* input)
         //Initialise pointer to the pointers with eigen objects
         IplImage** const eigenObjects  = new IplImage *[2];
 
-        IplImage* pAvgTrainImg = 0;
+        IplImage* pAvgTrainImg         = 0;
 
         //Initialize pointer to the average image
         if( !(pAvgTrainImg = cvCreateImage( size, IPL_DEPTH_32F, 1) ) )
@@ -380,8 +381,7 @@ pair<int, float> Eigenfaces::recognize(IplImage* input)
         //Perform PCA
         cvCalcEigenObjects(2, &tempFaces.front(), eigenObjects, CV_EIGOBJ_NO_CALLBACK, 0, NULL, &mycrit, pAvgTrainImg, eigenValues);
 
-        //This is a simple min distance mechanism for recognition. Perhaps we should check similarity of
-        //images.
+        //This is a simple min distance mechanism for recognition. Perhaps we should check similarity of images.
         if(eigenValues[0] < minDist)
         {
             minDist = eigenValues[0];
@@ -545,6 +545,7 @@ std::vector<int> Eigenfaces::update(vector<Face>& newFaceArr)
                 d->indexMap.push_back(id);
             }
         }
+
         result.at(i) = newFaceArr.at(i).getId();
     }
 
