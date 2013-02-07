@@ -7,11 +7,11 @@
  * @date  2010-09-02
  * @brief Wrapper class for face recongition
  *
- * @author Copyright (C) 2010 by Marcel Wiesweg
+ * @author Copyright (C) 2010-2013 by Marcel Wiesweg
  *         <a href="mailto:marcel dot wiesweg at gmx dot de">marcel dot wiesweg at gmx dot de</a>
  * @author Copyright (C) 2010 by Aditya Bhatt
  *         <a href="mailto:adityabhatt1991 at gmail dot com">adityabhatt1991 at gmail dot com</a>
- * @author Copyright (C) 2010 by Gilles Caulier
+ * @author Copyright (C) 2010-2013 by Gilles Caulier
  *         <a href="mailto:caulier dot gilles at gmail dot com">caulier dot gilles at gmail dot com</a>
  *
  * This program is free software; you can redistribute it
@@ -75,6 +75,7 @@ public:
 
     RecognitionDatabase(const RecognitionDatabase& other);
     ~RecognitionDatabase();
+
     RecognitionDatabase& operator=(const RecognitionDatabase& other);
 
     bool isNull() const;
@@ -151,11 +152,11 @@ public:
 
 private:
 
-    class RecognitionDatabasePriv;
+    class Private;
 
-    RecognitionDatabase(QExplicitlySharedDataPointer<RecognitionDatabasePriv> d);
+    RecognitionDatabase(QExplicitlySharedDataPointer<Private> d);
 
-    QExplicitlySharedDataPointer<RecognitionDatabasePriv> d;
+    QExplicitlySharedDataPointer<Private> d;
 
     friend class RecognitionDatabaseStaticPriv;
 };

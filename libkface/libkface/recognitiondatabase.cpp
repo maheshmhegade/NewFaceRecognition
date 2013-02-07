@@ -7,11 +7,11 @@
  * @date   2010-06-16
  * @brief  The RecognitionDatabase class wraps the libface database
  *
- * @author Copyright (C) 2010 by Marcel Wiesweg
+ * @author Copyright (C) 2010-2013 by Marcel Wiesweg
  *         <a href="mailto:marcel dot wiesweg at gmx dot de">marcel dot wiesweg at gmx dot de</a>
  * @author Copyright (C) 2010 by Aditya Bhatt
  *         <a href="mailto:adityabhatt1991 at gmail dot com">adityabhatt1991 at gmail dot com</a>
- * @author Copyright (C) 2010 by Gilles Caulier
+ * @author Copyright (C) 2010-2013 by Gilles Caulier
  *         <a href="mailto:caulier dot gilles at gmail dot com">caulier dot gilles at gmail dot com</a>
  *
  * This program is free software; you can redistribute it
@@ -51,10 +51,10 @@ namespace KFaceIface
  * What is all this code here about?
  * The RecognitionDatabaseStaticPriv holds a hash to all exising RecognitionDatabase data,
  * mutex protected.
- * When creating a RecognitionDatabase, either a new RecognitionDatabasePriv is created,
+ * When creating a RecognitionDatabase, either a new Private is created,
  * or an existing one is used.
- * When the last RecognitionDatabase referencing a RecognitionDatabasePriv is destroyed,
- * the RecognitionDatabasePriv is destroyed as well, removing itself from the static hash.
+ * When the last RecognitionDatabase referencing a Private is destroyed,
+ * the Private is destroyed as well, removing itself from the static hash.
  */
 
 class RecognitionDatabaseStaticPriv
@@ -68,37 +68,39 @@ public:
         defaultPath = KStandardDirs::locateLocal("data", "libkface/database/", true);
     }
 
-    QExplicitlySharedDataPointer<RecognitionDatabase::RecognitionDatabasePriv> database(const QString& key);
+    QExplicitlySharedDataPointer<RecognitionDatabase::Private> database(const QString& key);
     void removeDatabase(const QString& key);
 
-    QString                                                               defaultPath;
-    QMutex                                                                mutex;
+public:
+
+    QString                                               defaultPath;
+    QMutex                                                mutex;
 
     // Important: Do not hold an QExplicitlySharedDataPointer here, or the objects will never be freed!
-    typedef QHash<QString, RecognitionDatabase::RecognitionDatabasePriv*> DatabaseHash;
-    DatabaseHash                                                          databases;
+    typedef QHash<QString, RecognitionDatabase::Private*> DatabaseHash;
+    DatabaseHash                                          databases;
 };
 
 K_GLOBAL_STATIC(RecognitionDatabaseStaticPriv, static_d)
 
-class RecognitionDatabase::RecognitionDatabasePriv : public QSharedData
+// -------------------------------------------------------------------------------------------------------
+
+class RecognitionDatabase::Private : public QSharedData
 {
 public:
 
-    ~RecognitionDatabasePriv()
+    ~Private()
     {
         static_d->removeDatabase(configPath);
         delete db;
     }
 
-    const QString configPath;
-    QMutex        mutex;
-
     // call under lock
     Database* database() const
     {
         if (!db)
-            const_cast<RecognitionDatabasePriv*>(this)->db = new Database(Database::InitRecognition, configPath);
+            const_cast<Private*>(this)->db = new Database(Database::InitRecognition, configPath);
+
         return db;
     }
 
@@ -107,11 +109,16 @@ public:
         return db;
     }
 
+public:
+
+    const QString configPath;
+    QMutex        mutex;
+
 private:
 
     friend class RecognitionDatabaseStaticPriv;
 
-    RecognitionDatabasePriv(const QString& configPath)
+    Private(const QString& configPath)
         : configPath(configPath), mutex(QMutex::Recursive), db(0)
     {
     }
@@ -121,11 +128,12 @@ private:
     Database* db;
 };
 
-QExplicitlySharedDataPointer<RecognitionDatabase::RecognitionDatabasePriv> RecognitionDatabaseStaticPriv::database(const QString& path)
+QExplicitlySharedDataPointer<RecognitionDatabase::Private> RecognitionDatabaseStaticPriv::database(const QString& path)
 {
     QMutexLocker lock(&mutex);
     QString configPath        = path.isNull() ? defaultPath : path;
     DatabaseHash::iterator it = databases.find(configPath);
+
     if (it != databases.end())
     {
         /* There is a race condition: The last Priv is dereferenced, the destructor called.
@@ -135,7 +143,7 @@ QExplicitlySharedDataPointer<RecognitionDatabase::RecognitionDatabasePriv> Recog
          */
         if (it.value()->ref.fetchAndAddOrdered(1) != 0)
         {
-            QExplicitlySharedDataPointer<RecognitionDatabase::RecognitionDatabasePriv> p(it.value());
+            QExplicitlySharedDataPointer<RecognitionDatabase::Private> p(it.value());
             it.value()->ref.deref(); // We incremented above
             return p;
         }
@@ -143,9 +151,10 @@ QExplicitlySharedDataPointer<RecognitionDatabase::RecognitionDatabasePriv> Recog
          * safe to access it, because the destructor has not yet completed - otherwise it'd not be in the hash.
          */
     }
-    RecognitionDatabase::RecognitionDatabasePriv* d = new RecognitionDatabase::RecognitionDatabasePriv(configPath);
-    databases[configPath]                           = d;
-    return QExplicitlySharedDataPointer<RecognitionDatabase::RecognitionDatabasePriv>(d);
+
+    RecognitionDatabase::Private* const d = new RecognitionDatabase::Private(configPath);
+    databases[configPath]                 = d;
+    return QExplicitlySharedDataPointer<RecognitionDatabase::Private>(d);
 }
 
 void RecognitionDatabaseStaticPriv::removeDatabase(const QString& key)
@@ -154,9 +163,11 @@ void RecognitionDatabaseStaticPriv::removeDatabase(const QString& key)
     databases.remove(key);
 }
 
+// ------------------------------------------------------------------------------------------
+
 RecognitionDatabase RecognitionDatabase::addDatabase(const QString& configurationPath)
 {
-    QExplicitlySharedDataPointer<RecognitionDatabasePriv> d = static_d->database(configurationPath);
+    QExplicitlySharedDataPointer<Private> d = static_d->database(configurationPath);
     return RecognitionDatabase(d);
 }
 
@@ -164,8 +175,8 @@ RecognitionDatabase::RecognitionDatabase()
 {
 }
 
-RecognitionDatabase::RecognitionDatabase(QExplicitlySharedDataPointer<RecognitionDatabasePriv> d)
-                   : d(d)
+RecognitionDatabase::RecognitionDatabase(QExplicitlySharedDataPointer<Private> d)
+    : d(d)
 {
 }
 
@@ -194,6 +205,7 @@ bool RecognitionDatabase::updateFaces(QList<Face>& faces)
 {
     if (!d)
         return false;
+
     QImage noUse;
     QMutexLocker lock(&d->mutex);
     return d->database()->updateFaces(faces,noUse);
@@ -203,6 +215,7 @@ QList<double> RecognitionDatabase::recognizeFaces(QList<Face>& faces)
 {
     if (!d)
         return QList<double>();
+
     QMutexLocker lock(&d->mutex);
     QImage dummyImage;
     return d->database()->recognizeFaces(faces,dummyImage);
@@ -221,6 +234,7 @@ QString RecognitionDatabase::configPath() const
 {
     if (!d)
         return QString();
+
     return d->configPath;
 }
 
@@ -228,6 +242,7 @@ int RecognitionDatabase::peopleCount() const
 {
     if (!d)
         return 0;
+
     QMutexLocker lock(&d->mutex);
     return d->database()->peopleCount();
 }
@@ -236,6 +251,7 @@ QSize RecognitionDatabase::recommendedImageSize(const QSize& availableSize) cons
 {
     if (!d)
         return QSize();
+
     QMutexLocker lock(&d->mutex);
     return d->database()->recommendedImageSizeForRecognition(availableSize);
 }
@@ -244,6 +260,7 @@ void RecognitionDatabase::clearTraining(const QString& name)
 {
     if (!d)
         return;
+
     QMutexLocker lock(&d->mutex);
     return d->database()->clearTraining(name);
 }
@@ -252,6 +269,7 @@ void RecognitionDatabase::clearTraining(int id)
 {
     if (!d)
         return;
+
     QMutexLocker lock(&d->mutex);
     return d->database()->clearTraining(id);
 }
@@ -260,6 +278,7 @@ void RecognitionDatabase::clearAllTraining()
 {
     if (!d)
         return;
+
     QMutexLocker lock(&d->mutex);
     return d->database()->clearAllTraining();
 }
@@ -268,6 +287,7 @@ QList<int> RecognitionDatabase::allIds() const
 {
     if (!d)
         return QList<int>();
+
     QMutexLocker lock(&d->mutex);
     return d->database()->allIds();
 }
@@ -276,6 +296,7 @@ QStringList RecognitionDatabase::allNames() const
 {
     if (!d)
         return QStringList();
+
     QMutexLocker lock(&d->mutex);
     return d->database()->allNames();
 }
@@ -284,6 +305,7 @@ QString RecognitionDatabase::nameForId(int id) const
 {
     if (!d)
         return QString();
+
     QMutexLocker lock(&d->mutex);
     return d->database()->nameForId(id);
 }
@@ -292,6 +314,7 @@ int RecognitionDatabase::idForName(const QString& name) const
 {
     if (!d)
         return -1;
+
     QMutexLocker lock(&d->mutex);
     return d->database()->idForName(name);
 }
