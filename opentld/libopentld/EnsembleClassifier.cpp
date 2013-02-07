@@ -43,8 +43,8 @@ namespace tld
 #define sub2idx(x,y,widthstep) ((int) (floor((x)+0.5) + floor((y)+0.5)*(widthstep)))
 
 EnsembleClassifier::EnsembleClassifier() :
-    features(NULL),
     featureOffsets(NULL),
+    features(NULL),
     posteriors(NULL),
     positives(NULL),
     negatives(NULL)
@@ -233,7 +233,7 @@ void EnsembleClassifier::updatePosteriors(int *featureVector, int positive, int 
     }
 }
 
-void EnsembleClassifier::learn(int *boundary, int positive, int *featureVector)
+void EnsembleClassifier::learn(int* /*boundary*/, int positive, int *featureVector)
 {
     if(!enabled) return;
 

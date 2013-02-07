@@ -646,7 +646,7 @@ CvBox2D CBlob::GetEllipse()
 - CREATION DATE: 25-05-2005.
 - MODIFICATION: Date. Author. Description.
 */
-void CBlob::FillBlob( IplImage *imatge, CvScalar color, int offsetX /*=0*/, int offsetY /*=0*/) 					  
+void CBlob::FillBlob( IplImage *imatge, CvScalar color, int /*offsetX=0*/, int /*offsetY=0*/)
 {
 	cvDrawContours( imatge, m_externalContour.GetContourPoints(), color, color,0, CV_FILLED, 8 );
 }

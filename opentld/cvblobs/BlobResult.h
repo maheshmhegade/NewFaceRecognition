@@ -15,9 +15,12 @@ MODIFICATIONS (Modification, Author, Date):
 #if !defined(_CLASSE_BLOBRESULT_INCLUDED)
 #define _CLASSE_BLOBRESULT_INCLUDED
 
+#ifdef _MSC_VER
 #if _MSC_VER > 1000 
 #pragma once
 #endif // _MSC_VER > 1000
+#endif
+
 
 #include "BlobLibraryConfiguration.h"
 #include <math.h>

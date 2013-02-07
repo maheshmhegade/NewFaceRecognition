@@ -73,7 +73,7 @@ static CvPoint point;
 static CvRect *bb;
 static int drag = 0;
 
-static void mouseHandler(int event, int x, int y, int flags, void *param)
+static void mouseHandler(int event, int x, int y, int /*flags*/, void* /*param*/)
 {
     /* user press left button */
     if(event == CV_EVENT_LBUTTONDOWN && !drag)

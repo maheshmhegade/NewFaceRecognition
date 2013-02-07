@@ -174,7 +174,7 @@ float tldBBOverlap(int *bb1, int *bb2)
     return intersection / (float)(area1 + area2 - intersection);
 }
 
-void tldOverlapOne(int *windows, int numWindows, int index, vector<int> * indices, float *overlap)
+void tldOverlapOne(int *windows, int /*numWindows*/, int index, vector<int> * indices, float *overlap)
 {
 
     for(size_t i = 0; i < indices->size(); i++)

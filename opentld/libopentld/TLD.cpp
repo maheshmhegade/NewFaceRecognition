@@ -381,7 +381,7 @@ void TLD::writeToFile(const char *path)
     fprintf(file, "%d #width\n", detectorCascade->objWidth);
     fprintf(file, "%d #height\n", detectorCascade->objHeight);
     fprintf(file, "%f #min_var\n", detectorCascade->varianceFilter->minVar);
-    fprintf(file, "%d #Positive Sample Size\n", nn->truePositives->size());
+    fprintf(file, "%d #Positive Sample Size\n", (int)nn->truePositives->size());
 
 
 
@@ -400,7 +400,7 @@ void TLD::writeToFile(const char *path)
         }
     }
 
-    fprintf(file, "%d #Negative Sample Size\n", nn->falsePositives->size());
+    fprintf(file, "%d #Negative Sample Size\n", (int)nn->falsePositives->size());
 
     for(size_t s = 0; s < nn->falsePositives->size(); s++)
     {
@@ -449,7 +449,7 @@ void TLD::writeToFile(const char *path)
             }
         }
 
-        fprintf(file, "%d #numLeaves\n", list.size());
+        fprintf(file, "%d #numLeaves\n", (int)list.size());
 
         for(size_t j = 0; j < list.size(); j++)
         {
