@@ -1,3 +1,5 @@
+// https://github.com/gnebehay/OpenTLD
+
 #include "cvblobs/BlobContour.h"
 #include "cvblobs/BlobLibraryConfiguration.h"
 #include "cvblobs/BlobOperators.h"
