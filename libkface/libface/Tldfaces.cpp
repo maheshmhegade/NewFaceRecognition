@@ -37,52 +37,72 @@ using namespace std;
 namespace libface
 {
 
-Tldface::Tldface()
+class Tldface::Private
 {
-    m_main        = new Main();
-    m_imAcq       = imAcqAlloc();
-    m_gui         = new Gui();
-    m_main->gui   = m_gui;
-    m_main->imAcq = m_imAcq;
-    m_config.configure(m_main);
-    srand(m_main->seed);
-    imAcqInit(m_imAcq);
+
+public:
+
+    Private()
+    {
+        main  = 0;
+        imAcq = 0;
+        gui   = 0;
+    }
+
+    Main*  main;
+    Config config;
+    ImAcq* imAcq;
+    Gui*   gui;
+};
+
+Tldface::Tldface()
+    : d(new Private)
+{
+    d->main        = new Main();
+    d->imAcq       = imAcqAlloc();
+    d->gui         = new Gui();
+    d->main->gui   = d->gui;
+    d->main->imAcq = d->imAcq;
+    d->config.configure(d->main);
+    srand(d->main->seed);
+    imAcqInit(d->imAcq);
 }
 
 Tldface::~Tldface()
 {
- //   delete main;
+//    delete d->main;
+    delete d;
 }
 
 int Tldface::writeModelTofile(IplImage* const inputImage, const char* const faceModelFilename) const
 {
     float dummyVariable;
-    m_main->doWork(inputImage, faceModelFilename, 1, &dummyVariable);
+    d->main->doWork(inputImage, faceModelFilename, 1, &dummyVariable);
     return 0;
 }
 
 float Tldface::getRecognitionConfidence(IplImage* const inputImage, const char* const faceModelFilename) const
 {
     float recognitionConfidence;
-    m_main->doWork(inputImage, faceModelFilename, 2, &recognitionConfidence);
+    d->main->doWork(inputImage, faceModelFilename, 2, &recognitionConfidence);
     return recognitionConfidence;
 }
 
 int Tldface::updateDatabase(IplImage* const /*inputImage*/, const char* const /*faceModelFilename*/) const
 {
-    //main->doWork(inputImage, faceModelFilename, 3);
+//    d->main->doWork(inputImage, faceModelFilename, 3);
     return 0;
 }
 
 IplImage* Tldface::QImage2IplImage(const QImage& qimg) const
 {
 
-    IplImage* const imgHeader  = cvCreateImageHeader(cvSize(qimg.width(), qimg.height()), IPL_DEPTH_8U, 4);
-    imgHeader->imageData       = (char*) qimg.bits();
+    IplImage* const imgHeader = cvCreateImageHeader(cvSize(qimg.width(), qimg.height()), IPL_DEPTH_8U, 4);
+    imgHeader->imageData      = (char*) qimg.bits();
 
-    uchar* const newdata       = (uchar*) malloc(sizeof(uchar) * qimg.byteCount());
+    uchar* const newdata      = (uchar*) malloc(sizeof(uchar) * qimg.byteCount());
     memcpy(newdata, qimg.bits(), qimg.byteCount());
-    imgHeader->imageData       = (char*) newdata;
+    imgHeader->imageData      = (char*) newdata;
 
     return imgHeader;
 }

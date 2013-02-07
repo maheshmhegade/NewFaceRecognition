@@ -61,12 +61,10 @@ public:
     float getRecognitionConfidence(IplImage* const, const char* const) const;
     IplImage* QImage2IplImage(const QImage&)                           const;
 
-public:
+private:
 
-    Main*  m_main;
-    Config m_config;
-    ImAcq* m_imAcq;
-    Gui*   m_gui;
+    class Private;
+    Private* const d;
 };
 
 } // namespace libface
