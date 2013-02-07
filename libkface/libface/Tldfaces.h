@@ -42,9 +42,9 @@
 #include "../../opentld/tldmain/Gui.h"
 
 using namespace tld;
-using tld::Config;
-using tld::Gui;
-using tld::Settings;
+using           tld::Config;
+using           tld::Gui;
+using           tld::Settings;
 
 namespace libface
 {
@@ -56,20 +56,17 @@ public:
     Tldface();
    ~Tldface();
 
-    int updateDatabase(IplImage*, const char*);
-
-    float getRecognitionConfidence(IplImage*, const char*);
-
-    int writeModelTofile(IplImage*, const char*);
-
-    IplImage* QImage2IplImage(QImage);
+    int writeModelTofile(IplImage* const, const char* const)           const;
+    int updateDatabase(IplImage* const, const char* const)             const;
+    float getRecognitionConfidence(IplImage* const, const char* const) const;
+    IplImage* QImage2IplImage(const QImage&)                           const;
 
 public:
 
-    Main*  main;
-    Config config;
-    ImAcq* imAcq;
-    Gui*   gui;
+    Main*  m_main;
+    Config m_config;
+    ImAcq* m_imAcq;
+    Gui*   m_gui;
 };
 
 } // namespace libface
