@@ -126,9 +126,10 @@ endif (LIBFACE_FOUND)
 # API      ABI
 # 0.1.0 => 0.1.0     (During digiKam GoSC2010)
 # 2.0.0 => 1.0.0     (Included into digiKam 2.0.0 Software Collection)
+# 3.0.0 => 2.0.0     (Face recognition using OpenTLD)
 
 # Library API version
-SET(KFACE_LIB_MAJOR_VERSION "2")
+SET(KFACE_LIB_MAJOR_VERSION "3")
 SET(KFACE_LIB_MINOR_VERSION "0")
 SET(KFACE_LIB_PATCH_VERSION "0")
 
@@ -143,7 +144,7 @@ SET(KFACE_LIB_SUFFIX_VERSION "")
 
 # Library ABI version used by linker.
 # For details : http://www.gnu.org/software/libtool/manual/libtool.html#Updating-version-info
-SET(KFACE_LIB_SO_CUR_VERSION "1")
+SET(KFACE_LIB_SO_CUR_VERSION "2")
 SET(KFACE_LIB_SO_REV_VERSION "0")
 SET(KFACE_LIB_SO_AGE_VERSION "0")
 
@@ -221,8 +222,7 @@ SET(libfaceGUI_SRCS   ${CMAKE_CURRENT_SOURCE_DIR}/libkface/test/main.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/libkface/test/button.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/libkface/test/marquee.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/libkface/test/fancyrect.cpp
-#opentld
-
+                      #opentld
                     )
 
 KDE4_ADD_UI_FILES(libfaceGUI_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/libkface/test/mainwindow.ui)
@@ -233,8 +233,8 @@ TARGET_LINK_LIBRARIES(libfaceGUI kface ${KDE4_KDECORE_LIBS}
                                        ${KDE4_KIO_LIBS}
                                        ${QT_QTCORE_LIBRARY}
                                        ${QT_QTGUI_LIBRARY}
-                                       ${OpenCV_LIBRARIES} 
-#opentld
-                                       ${OpenCV_LIBS} 
+                                       ${OpenCV_LIBRARIES}
+                                       #opentld
+                                       ${OpenCV_LIBS}
                      )
 
