@@ -229,7 +229,7 @@ bool Database::updateFaces(QList<Face>& faces,QImage ImageToTld)
             QImage faceToTld = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
                                                face.toFace().getWidth(),face.toFace().getHeight());
             libface::Tldface *tmpTLD = new libface::Tldface;
-            tmpTLD->writeModelTofile(&(tmpTLD->QImage2IplImage(faceToTld)),(face.name().toStdString().c_str()));
+            tmpTLD->writeModelTofile((tmpTLD->QImage2IplImage(faceToTld)),(face.name().toStdString().c_str()));
             delete tmpTLD;
         }
         faceVec.push_back(face.toFace(Face::ShallowCopy));
@@ -331,7 +331,7 @@ QList<double> Database::recognizeFaces(QList<Face>& faces,QImage imageToTld)
                 count ++;
                 libface::Tldface *tmpTLD = new libface::Tldface;
                 cout << "failed" << endl;
-                recognitionConfidence.push_back((tmpTLD->getRecognitionConfidence(&(tmpTLD->QImage2IplImage(faceToTld)),(itp.key().toStdString().c_str()))));
+                recognitionConfidence.push_back((tmpTLD->getRecognitionConfidence((tmpTLD->QImage2IplImage(faceToTld)),(itp.key().toStdString().c_str()))));
                 namesInDatabase.push_back(itp.key().toStdString());
 
                 delete tmpTLD;

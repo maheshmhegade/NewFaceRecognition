@@ -21,6 +21,7 @@ int libface::Tldface::writeModelTofile(IplImage *inputImage, const char *faceMod
 {
     float dummyVariable;
     main->doWork(inputImage,faceModelFilename,1,&dummyVariable);
+    return 0;
 }
 
 float libface::Tldface::getRecognitionConfidence(IplImage *inputImage, const char *faceModelFilename)
@@ -36,7 +37,7 @@ int libface::Tldface::updateDatabase(IplImage *inputImage, const char *faceModel
     return 0;
 }
 
-IplImage libface::Tldface::QImage2IplImage(QImage qimg)
+IplImage *libface::Tldface::QImage2IplImage(QImage qimg)
 {
 
     IplImage *imgHeader = cvCreateImageHeader( cvSize(qimg.width(), qimg.height()), IPL_DEPTH_8U, 4);
@@ -45,6 +46,6 @@ IplImage libface::Tldface::QImage2IplImage(QImage qimg)
     uchar* newdata = (uchar*) malloc(sizeof(uchar) * qimg.byteCount());
     memcpy(newdata, qimg.bits(), qimg.byteCount());
     imgHeader->imageData = (char*) newdata;
-    return (*imgHeader);
+    return imgHeader;
 }
 

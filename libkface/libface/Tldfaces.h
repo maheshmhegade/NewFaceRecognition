@@ -29,7 +29,7 @@ class Tldface
 
     int writeModelTofile(IplImage* ,const char *);
 
-    IplImage QImage2IplImage(QImage );
+    IplImage* QImage2IplImage(QImage );
 
 };
 }
