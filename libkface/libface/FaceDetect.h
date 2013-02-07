@@ -12,7 +12,7 @@
  *         <a href="alexjironkin at gmail dot com">alexjironkin at gmail dot com</a>
  * @author Copyright (C) 2010 by Aditya Bhatt
  *         <a href="adityabhatt at gmail dot com">adityabhatt at gmail dot com</a>
- * @author Copyright (C) 2010 by Gilles Caulier
+ * @author Copyright (C) 2010-2013 by Gilles Caulier
  *         <a href="mailto:caulier dot gilles at gmail dot com">caulier dot gilles at gmail dot com</a>
  *
  * @section LICENSE
@@ -32,6 +32,8 @@
 
 #ifndef _FACEDETECT_H_
 #define _FACEDETECT_H_
+
+// Local includes
 
 #include "LibFaceCore.h"
 #include "LibFaceConfig.h"
@@ -65,7 +67,7 @@ public:
      * @param inputImage A pointer to the image in which faces are to be detected
      * @return The vector of detected faces
      */
-    std::vector<Face> detectFaces(const IplImage* inputImage, const CvSize& originalSize = cvSize(0,0));
+    std::vector<Face> detectFaces(const IplImage* const inputImage, const CvSize& originalSize = cvSize(0,0));
 
     /**
      * Inherited method from LibFaceDetectCore. A slightly different interface where you can specify
@@ -88,7 +90,7 @@ public:
     void setAccuracy(double speedVsAccuracy);
     void setSpecificity(double sensitivityVsSpecificity);
 
-    double accuracy() const;
+    double accuracy()    const;
     double specificity() const;
 
     /**
@@ -107,9 +109,10 @@ private:
      *  @param params The parameters to be used for detection
      *  @return Returns a vector of Face objects. Each object hold information about 1 face.
      */
-    std::vector<Face> cascadeResult(const IplImage* inputImage, CvHaarClassifierCascade* casc, const DetectObjectParameters& params);
+    std::vector<Face> cascadeResult(const IplImage* const inputImage, CvHaarClassifierCascade* const casc, 
+                                    const DetectObjectParameters& params);
 
-    bool verifyFace(const IplImage* inputImage, const Face &face);
+    bool verifyFace(const IplImage* const inputImage, const Face& face);
 
     /**
      * Returns the faces from the detection results of multiple cascades
@@ -119,14 +122,14 @@ private:
      * @param mindups The minimum number of duplicate detections required for a face to qualify as genuine
      * @return The vector of the final faces
      */
-    std::vector<Face> mergeFaces(const IplImage*, std::vector< std::vector<Face> >, int maxdist, int mindups);
+    std::vector<Face> mergeFaces(const IplImage* const, std::vector< std::vector<Face> >, int maxdist, int mindups);
 
     void updateParameters(const CvSize& scaledSize, const CvSize& originalSize);
 
 private:
 
-    class FaceDetectPriv;
-    FaceDetectPriv* const d;
+    class Private;
+    Private* const d;
 };
 
 } // namespace libface
