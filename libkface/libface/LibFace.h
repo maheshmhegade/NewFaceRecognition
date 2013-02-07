@@ -12,9 +12,9 @@
  *         <a href="alexjironkin at gmail dot com">alexjironkin at gmail dot com</a>
  * @author Copyright (C) 2010 by Aditya Bhatt
  *         <a href="adityabhatt at gmail dot com">adityabhatt at gmail dot com</a>
- * @author Copyright (C) 2010 by Gilles Caulier
+ * @author Copyright (C) 2010-2013 by Gilles Caulier
  *         <a href="mailto:caulier dot gilles at gmail dot com">caulier dot gilles at gmail dot com</a>
- * @author Copyright (C) 2010 by Marcel Wiesweg
+ * @author Copyright (C) 2010-2013 by Marcel Wiesweg
  *         <a href="mailto:marcel dot wiesweg at gmx dot de">marcel dot wiesweg at gmx dot de</a>
  *
  * @section LICENSE
@@ -34,6 +34,8 @@
 
 #ifndef _LIBFACE_H_
 #define _LIBFACE_H_
+
+// Local includes
 
 #include "Eigenfaces.h"
 #include "LibFaceConfig.h"
@@ -261,8 +263,8 @@ public:
 
 private:
 
-    class LibFacePriv;
-    LibFacePriv* const d;
+    class Private;
+    Private* const d;
 };
 
 } // namespace libface
