@@ -7,7 +7,7 @@
  * @date  2010-09-02
  * @brief A convenience class for a standalone face detector
  *
- * @author Copyright (C) 2010 by Marcel Wiesweg
+ * @author Copyright (C) 2010-2013 by Marcel Wiesweg
  *         <a href="mailto:marcel dot wiesweg at gmx dot de">marcel dot wiesweg at gmx dot de</a>
  *
  * This program is free software; you can redistribute it
@@ -36,18 +36,18 @@
 namespace KFaceIface
 {
 
-class FaceDetector::FaceDetectorPriv : public QSharedData
+class FaceDetector::Private : public QSharedData
 {
 public:
 
-    FaceDetectorPriv()
+    Private()
     {
         db          = 0;
         accuracy    = -1;
         specificity = -1;
     }
 
-    ~FaceDetectorPriv()
+    ~Private()
     {
         delete db;
     }
@@ -59,11 +59,14 @@ public:
         if (!db)
         {
             db = new Database(Database::InitDetection);
+
             if (accuracy != -1)
                 db->setDetectionAccuracy(accuracy);
+
             if (specificity != -1)
                 db->setDetectionSpecificity(specificity);
         }
+
         return db;
     }
 
@@ -83,7 +86,7 @@ private:
 };
 
 FaceDetector::FaceDetector()
-            : d(new FaceDetectorPriv)
+    : d(new Private)
 {
 }
 

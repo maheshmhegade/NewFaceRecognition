@@ -7,11 +7,11 @@
  * @date   2010-06-16
  * @brief  This is a collection of useful functions
  *
- * @author Copyright (C) 2010 by Marcel Wiesweg
+ * @author Copyright (C) 2010-2013 by Marcel Wiesweg
  *         <a href="mailto:marcel dot wiesweg at gmx dot de">marcel dot wiesweg at gmx dot de</a>
  * @author Copyright (C) 2010 by Aditya Bhatt
  *         <a href="mailto:adityabhatt1991 at gmail dot com">adityabhatt1991 at gmail dot com</a>
- * @author Copyright (C) 2010-2012 by Gilles Caulier
+ * @author Copyright (C) 2010-2013 by Gilles Caulier
  *         <a href="mailto:caulier dot gilles at gmail dot com">caulier dot gilles at gmail dot com</a>
  *
  * This program is free software; you can redistribute it
@@ -48,24 +48,28 @@ namespace KFaceIface
 QImage KFaceUtils::QImage2Grayscale(const QImage& qimg)
 {
     QImage img = qimg;
-    if (img.width() == 0 || img.height() == 0)
-      return img;
 
-    int pixels         = img.width() * img.height() ;
-    unsigned int* data = (unsigned int*)img.bits();
+    if (img.width() == 0 || img.height() == 0)
+        return img;
+
+    int pixels               = img.width() * img.height() ;
+    unsigned int* const data = (unsigned int* const)img.bits();
 
     int val;
+
     for(int i=0; i < pixels; ++i)
     {
         val     = qGray(data[i]);
         data[i] = qRgba(val, val, val, qAlpha(data[i]));
     }
+
     return img;
 }
 
 IplImage* KFaceUtils::QImage2GrayscaleIplImage(const QImage& qimg)
 {
     QImage localImage;
+
     switch (qimg.format())
     {
         case QImage::Format_RGB32:
@@ -78,6 +82,7 @@ IplImage* KFaceUtils::QImage2GrayscaleIplImage(const QImage& qimg)
             localImage = qimg.convertToFormat(QImage::Format_RGB32);
             break;
     }
+
     // I'm a bit paranoid not to cause a deep copy when calling bits()
     const QImage& image = localImage;
     const int width     = image.width();
@@ -101,7 +106,7 @@ IplImage* KFaceUtils::QImage2GrayscaleIplImage(const QImage& qimg)
 
     const quint32* sptr = (const quint32*)image.bits();
     const int imageStep = image.bytesPerLine() / sizeof(quint32);
-    uchar* dptr         = (uchar*)iplImg->imageData;
+    uchar* dptr         = (uchar* const)iplImg->imageData;
     const int iplStep   = iplImg->widthStep / sizeof(uchar);
 
     for (int y=0; y<height; ++y)
@@ -110,6 +115,7 @@ IplImage* KFaceUtils::QImage2GrayscaleIplImage(const QImage& qimg)
         {
             dptr[x] = qGray(sptr[x]);
         }
+
         sptr += imageStep;
         dptr += iplStep;
     }
@@ -122,6 +128,7 @@ IplImage* KFaceUtils::Data2GrayscaleIplImage(uint width, uint height, bool sixte
     Q_UNUSED(alpha);
 
     IplImage* img = 0;
+
     try
     {
         img = cvCreateImage( cvSize(width, height), IPL_DEPTH_8U, 1);
@@ -148,11 +155,12 @@ IplImage* KFaceUtils::Data2GrayscaleIplImage(uint width, uint height, bool sixte
         {
             for (uint x=0; x<width; ++x)
             {
-                dptr[x] = qGray((sptr[2] * 255UL) / 65535UL,    // R
+                dptr[x]  = qGray((sptr[2] * 255UL) / 65535UL,    // R
                                 (sptr[1] * 255UL) / 65535UL,    // G
                                 (sptr[0] * 255UL) / 65535UL);   // B
-                sptr += 4;
+                sptr    += 4;
             }
+
             dptr += iplStep;
         }
     }
@@ -164,9 +172,10 @@ IplImage* KFaceUtils::Data2GrayscaleIplImage(uint width, uint height, bool sixte
         {
             for (uint x=0; x<width; ++x)
             {
-                dptr[x] = qGray(sptr[2], sptr[1], sptr[0]);
-                sptr += 4;
+                dptr[x]  = qGray(sptr[2], sptr[1], sptr[0]);
+                sptr    += 4;
             }
+
             dptr += iplStep;
         }
     }
@@ -239,7 +248,6 @@ QHash<QString, int> KFaceUtils::hashFromFile(const QString& fileName)
 {
     QFile file(fileName);
     file.open(QIODevice::ReadOnly|QIODevice::Text);
-
     QHash<QString, int> tempHash;
     QPair<QString, int> namePair;
     QDataStream in(&file);

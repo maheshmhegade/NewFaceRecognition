@@ -7,11 +7,11 @@
  * @date   2010-06-18
  * @brief  Wrapper class for image data
  *
- * @author Copyright (C) 2010 by Marcel Wiesweg
+ * @author Copyright (C) 2010-2013 by Marcel Wiesweg
  *         <a href="mailto:marcel dot wiesweg at gmx dot de">marcel dot wiesweg at gmx dot de</a>
  * @author Copyright (C) 2010 by Aditya Bhatt
  *         <a href="mailto:adityabhatt1991 at gmail dot com">adityabhatt1991 at gmail dot com</a>
- * @author Copyright (C) 2010-2012 by Gilles Caulier
+ * @author Copyright (C) 2010-2013 by Gilles Caulier
  *         <a href="mailto:caulier dot gilles at gmail dot com">caulier dot gilles at gmail dot com</a>
  *
  * This program is free software; you can redistribute it
@@ -38,22 +38,22 @@
 namespace KFaceIface
 {
 
-class Image::ImagePriv : public QSharedData
+class Image::Private : public QSharedData
 {
 public:
 
-    ImagePriv()
+    Private()
         : image(0)
     {
     }
 
-    ImagePriv(const ImagePriv& other) : QSharedData(other)
+    Private(const Private& other) : QSharedData(other)
     {
         // this code is called of we want to detach()
         image = cvCloneImage(other.image);
     }
 
-    ~ImagePriv()
+    ~Private()
     {
         if (image)
             cvReleaseImage(&image);
@@ -69,12 +69,12 @@ class ImageData
 {
 public:
 
-    ImageData()                : image(0)     {}
-    ImageData(IplImage* image) : image(image) {}
+    ImageData()                      : image(0)     {}
+    ImageData(IplImage* const image) : image(image) {}
 
-    ImageData& operator=(IplImage* im)        { image = im; return *this; }
-    operator IplImage* ()                     { return image; }
-    operator const IplImage* () const         { return image; }
+    ImageData& operator=(IplImage* const im)        { image = im; return *this; }
+    operator IplImage* ()                           { return image; }
+    operator const IplImage* () const               { return image; }
 
 public:
 

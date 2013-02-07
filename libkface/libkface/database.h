@@ -11,7 +11,7 @@
  *         <a href="mailto:marcel dot wiesweg at gmx dot de">marcel dot wiesweg at gmx dot de</a>
  * @author Copyright (C) 2010 by Aditya Bhatt
  *         <a href="mailto:adityabhatt1991 at gmail dot com">adityabhatt1991 at gmail dot com</a>
- * @author Copyright (C) 2010 by Gilles Caulier
+ * @author Copyright (C) 2010-2013 by Gilles Caulier
  *         <a href="mailto:caulier dot gilles at gmail dot com">caulier dot gilles at gmail dot com</a>
  *
  * This program is free software; you can redistribute it
@@ -111,7 +111,7 @@ public:
      * @param faces A QList of Face's, which hold the face image too, for updating the DB.
      * @return False if no faces were updated, due to an argument of size zero
      */
-    bool updateFaces(QList<Face>& faces, QImage ImageToTld);
+    bool updateFaces(QList<Face>& faces, const QImage& ImageToTld);
 
     /**
      * Clear the training database for a single name or id.
@@ -128,7 +128,7 @@ public:
      * @return A QList of "closeness" of recognized faces, in the same order as the argument;
      * or an empty list, if an error occurred or no recognition data is available.
      */
-    QList<double> recognizeFaces(QList<Face>& faces, QImage imageToTld);
+    QList<double> recognizeFaces(QList<Face>& faces, const QImage& imageToTld);
 
     /**
      * Returns the directory path of the config file
@@ -158,7 +158,7 @@ public:
     /**
      * Get the currently set accuracy and specificity of Face Detection.
      */
-    double detectionAccuracy() const;
+    double detectionAccuracy()    const;
     double detectionSpecificity() const;
 
     /**
@@ -202,8 +202,8 @@ public:
 
 private:
 
-    class DatabasePriv;
-    QExplicitlySharedDataPointer<DatabasePriv> d;
+    class Private;
+    QExplicitlySharedDataPointer<Private> d;
 };
 
 } // namespace KFaceIface

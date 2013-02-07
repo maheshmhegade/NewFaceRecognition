@@ -56,11 +56,11 @@ using namespace std;
 namespace KFaceIface
 {
 
-class Database::DatabasePriv : public QSharedData
+class Database::Private : public QSharedData
 {
 public:
 
-    DatabasePriv()
+    Private()
         : mappingFilename(QString("/dictionary")),
           haarCascasdePath(KStandardDirs::installPath("data") + QString("libkface/haarcascades"))
     {
@@ -68,7 +68,7 @@ public:
         configDirty      = false;
     }
 
-    ~DatabasePriv()
+    ~Private()
     {
         saveConfig();
 
@@ -85,14 +85,6 @@ public:
             kDebug() << "cv::Exception";
         }
     }
-
-    libface::LibFace*   libface;
-    Database::InitFlags initFlags;
-    QHash<QString, int> hash;
-    QString             configPath;
-    bool                configDirty;
-    const QString       mappingFilename;
-    const QString       haarCascasdePath;
 
     void saveConfig()
     {
@@ -113,10 +105,20 @@ public:
             kDebug() << "cv::Exception";
         }
     }
+
+public:
+
+    libface::LibFace*   libface;
+    Database::InitFlags initFlags;
+    QHash<QString, int> hash;
+    QString             configPath;
+    bool                configDirty;
+    const QString       mappingFilename;
+    const QString       haarCascasdePath;
 };
 
 Database::Database(InitFlags flags, const QString& configurationPath)
-        : d(new DatabasePriv)
+    : d(new Private)
 {
     // Note: same lines in RecognitionDatabase. Keep in sync.
     if (configurationPath.isNull())
@@ -136,6 +138,7 @@ Database::Database(InitFlags flags, const QString& configurationPath)
         else
         {
             libface::Mode mode;
+
             if (flags == InitAll)
                 mode = libface::ALL;
             else
@@ -175,15 +178,16 @@ Database::~Database()
 
 QList<Face> Database::detectFaces(const Image& image)
 {
-    const IplImage* img = image.imageData();
+    const IplImage* const img = image.imageData();
     //cvShowImage("show1",img );
     cvWaitKey(0);
-    CvSize originalSize = cvSize(0,0);
+    CvSize originalSize       = cvSize(0,0);
 
     if (!image.originalSize().isNull())
         originalSize = KFaceUtils::toCvSize(image.originalSize());
 
     std::vector<libface::Face> result;
+
     try
     {
         result = d->libface->detectFaces(img, originalSize);
@@ -208,12 +212,13 @@ QList<Face> Database::detectFaces(const Image& image)
     return faceList;
 }
 
-bool Database::updateFaces(QList<Face>& faces,QImage ImageToTld)
+bool Database::updateFaces(QList<Face>& faces, const QImage& ImageToTld)
 {
     if(faces.isEmpty())
         return false;
 
     std::vector<libface::Face> faceVec;
+
     foreach(Face face, faces)
     {
         // If a name is already there in the dictionary, then set the ID from the dictionary, so that libface won't set it's own ID
@@ -224,12 +229,13 @@ bool Database::updateFaces(QList<Face>& faces,QImage ImageToTld)
         }
         else if(face.name() != NULL)
         {
-            QImage faceToTld = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
-                                               face.toFace().getWidth(),face.toFace().getHeight());
-            libface::Tldface *tmpTLD = new libface::Tldface;
+            QImage faceToTld               = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
+                                                             face.toFace().getWidth(),face.toFace().getHeight());
+            libface::Tldface* const tmpTLD = new libface::Tldface;
             tmpTLD->writeModelTofile((tmpTLD->QImage2IplImage(faceToTld)),(face.name().toStdString().c_str()));
             delete tmpTLD;
         }
+
         faceVec.push_back(face.toFace(Face::ShallowCopy));
     }
 
@@ -266,24 +272,26 @@ bool Database::updateFaces(QList<Face>& faces,QImage ImageToTld)
     return true;
 }
 
-QList<double> Database::recognizeFaces(QList<Face>& faces,QImage imageToTld)
+QList<double> Database::recognizeFaces(QList<Face>& faces, const QImage& imageToTld)
 {
     QList<double> closeness;
+
     if(faces.isEmpty() || !d->libface->count())
     {
         return closeness;
     }
 
     std::vector<libface::Face> faceVec;
+
     foreach(const Face& face, faces)
     {
         faceVec.push_back(face.toFace(Face::ShallowCopy));
     }
 
     std::vector< std::pair<int, double> > result;
+
     try
     {
-
         result = d->libface->recognise(&faceVec);
     }
     catch (cv::Exception& e)
@@ -301,8 +309,10 @@ QList<double> Database::recognizeFaces(QList<Face>& faces,QImage imageToTld)
         closeness.append(result.at(i).second);
 
         // Locate the name from the hash, pity we don't have a bi-directional hash in Qt
-        /*QHashIterator<QString, int> it(d->hash);
+        /*
+        QHashIterator<QString, int> it(d->hash);
         it.toFront();
+
         while(it.hasNext())
         {
             it.next();
@@ -312,46 +322,53 @@ QList<double> Database::recognizeFaces(QList<Face>& faces,QImage imageToTld)
                 faces[i].setName(it.key());
                 break;
             }
-        }*/
+        }
+        */
         vector< string> namesInDatabase;
         vector<float> recognitionConfidence;
 
         QHashIterator<QString, int> itp(d->hash);
         int count = -1;
+
         while(itp.hasNext())
         {
            itp.next();
 
-           QImage faceToTld = imageToTld.copy(faces[i].toFace().getX1(),faces[i].toFace().getY1(),
-                                              faces[i].toFace().getWidth(),faces[i].toFace().getHeight());
+           QImage faceToTld = imageToTld.copy(faces[i].toFace().getX1(),    faces[i].toFace().getY1(),
+                                              faces[i].toFace().getWidth(), faces[i].toFace().getHeight());
            if(itp.key() != NULL)
            {
                 count ++;
-                libface::Tldface *tmpTLD = new libface::Tldface;
+                libface::Tldface* const tmpTLD = new libface::Tldface;
                 cout << "failed" << endl;
                 recognitionConfidence.push_back((tmpTLD->getRecognitionConfidence((tmpTLD->QImage2IplImage(faceToTld)),(itp.key().toStdString().c_str()))));
                 namesInDatabase.push_back(itp.key().toStdString());
 
                 delete tmpTLD;
             }
-         }
+        }
+
         if(count != -1)
         {
-            int maxConfIndex = 0;
+            int maxConfIndex    = 0;
             float maxConfidence = recognitionConfidence[0];
+
             for(int tmpInt = 0; tmpInt <= count ; tmpInt++ )
             {
                 if(recognitionConfidence[tmpInt] > maxConfidence)
-                {   maxConfIndex = tmpInt;
+                {
+                    maxConfIndex  = tmpInt;
                     maxConfidence = recognitionConfidence[tmpInt];
                 }
             }
+
             cout << "executed " << endl;
+
             if(maxConfidence > 0.6 )
                 faces[i].setName(QString::fromStdString(namesInDatabase[maxConfIndex]));
         }
+    }
 
-     }
     return closeness;
 }
 

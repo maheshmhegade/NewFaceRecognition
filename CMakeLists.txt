@@ -174,7 +174,7 @@ IF (NOT LIBFACE_FOUND)
 
     # NOTE: update libface version ID when code is updated from SF.net
     SET(libface_MAJOR_VERSION 0)
-    SET(libface_MINOR_VERSION 2)
+    SET(libface_MINOR_VERSION 3)
 
     SET(DEBUG_MODE 0)
     SET(LOG_LEVEL "libfaceINFO")
@@ -185,12 +185,9 @@ IF (NOT LIBFACE_FOUND)
     MESSAGE(STATUS "External libface was not found, use internal version instead...")
 ENDIF (NOT LIBFACE_FOUND)
 
-
-
 # Install find cmake script to the system for client applications.
 
 ADD_DEFINITIONS(${KDE4_ENABLE_EXCEPTIONS})
-
 ADD_DEFINITIONS(${LIBFACE_DEFINITIONS})
 ADD_DEFINITIONS(${KDE4_ENABLE_EXCEPTIONS})
 REMOVE_DEFINITIONS(-DQT_NO_STL)
@@ -237,4 +234,3 @@ TARGET_LINK_LIBRARIES(libfaceGUI kface ${KDE4_KDECORE_LIBS}
                                        #opentld
                                        ${OpenCV_LIBS}
                      )
-

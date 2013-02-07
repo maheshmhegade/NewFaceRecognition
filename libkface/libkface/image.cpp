@@ -7,11 +7,11 @@
  * @date   2010-06-18
  * @brief  Wrapper class for image data
  *
- * @author Copyright (C) 2010 by Marcel Wiesweg
+ * @author Copyright (C) 2010-2013 by Marcel Wiesweg
  *         <a href="mailto:marcel dot wiesweg at gmx dot de">marcel dot wiesweg at gmx dot de</a>
  * @author Copyright (C) 2010 by Aditya Bhatt
  *         <a href="mailto:adityabhatt1991 at gmail dot com">adityabhatt1991 at gmail dot com</a>
- * @author Copyright (C) 2010-2012 by Gilles Caulier
+ * @author Copyright (C) 2010-2013 by Gilles Caulier
  *         <a href="mailto:caulier dot gilles at gmail dot com">caulier dot gilles at gmail dot com</a>
  *
  * This program is free software; you can redistribute it
@@ -49,19 +49,19 @@ Image::Image()
 }
 
 Image::Image(const QString& filePath)
-    : d(new ImagePriv)
+    : d(new Private)
 {
     d->image = cvLoadImage(QFile::encodeName(filePath), CV_LOAD_IMAGE_GRAYSCALE);
 }
 
 Image::Image(const QImage& givenImage)
-    : d(new ImagePriv)
+    : d(new Private)
 {
     d->image = KFaceUtils::QImage2GrayscaleIplImage(KFaceUtils::QImage2Grayscale(givenImage));
 }
 
 Image::Image(uint width, uint height, bool sixteenBit, bool alpha, const uchar* const data)
-    : d(new ImagePriv)
+    : d(new Private)
 {
     d->image = KFaceUtils::Data2GrayscaleIplImage(width, height, sixteenBit, alpha, data);
 }
@@ -72,7 +72,7 @@ Image::Image(const Image& other)
 }
 
 Image::Image(ImageData image)
-    : d(new ImagePriv)
+    : d(new Private)
 {
     // take ownership of IplImage
     d->image = image;

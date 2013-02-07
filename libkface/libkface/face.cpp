@@ -7,11 +7,11 @@
  * @date   2010-06-16
  * @brief  This is a derivative of Face class
  *
- * @author Copyright (C) 2010-2011 by Marcel Wiesweg
+ * @author Copyright (C) 2010-2013 by Marcel Wiesweg
  *         <a href="mailto:marcel dot wiesweg at gmx dot de">marcel dot wiesweg at gmx dot de</a>
  * @author Copyright (C) 2010-2011 by Aditya Bhatt
  *         <a href="mailto:adityabhatt1991 at gmail dot com">adityabhatt1991 at gmail dot com</a>
- * @author Copyright (C) 2010-2012 by Gilles Caulier
+ * @author Copyright (C) 2010-2013 by Gilles Caulier
  *         <a href="mailto:caulier dot gilles at gmail dot com">caulier dot gilles at gmail dot com</a>
  *
  * This program is free software; you can redistribute it
@@ -36,7 +36,7 @@
 // Libface includes
 
 #include "../libface/Face.h"
-#include <LibFaceConfig.h>
+#include "LibFaceConfig.h"
 
 // Local includes
 
@@ -48,15 +48,15 @@
 namespace KFaceIface
 {
 
-class Face::FacePriv : public QSharedData
+class Face::Private : public QSharedData
 {
 public:
 
-    FacePriv()
+    Private()
     {
     }
 
-    ~FacePriv()
+    ~Private()
     {
         // we handle releasing the image
         face.setFace(0);
@@ -68,12 +68,12 @@ public:
 };
 
 Face::Face()
-    : d(new FacePriv)
+    : d(new Private)
 {
 }
 
 Face::Face(const QRect& rect, const Image& image)
-    : d(new FacePriv)
+    : d(new Private)
 {
     setRect(rect);
     setImage(image);
@@ -97,6 +97,7 @@ Face& Face::operator=(const Face& other)
 Face Face::fromFace(const libface::Face& f, ImageOwnershipMode mode)
 {
     Image image;
+
     switch (mode)
     {
         case ShallowCopy:
@@ -118,6 +119,7 @@ Face Face::fromFace(const libface::Face& f, ImageOwnershipMode mode)
 libface::Face Face::toFace(ImageOwnershipMode mode) const
 {
     libface::Face face = d->face;
+
     switch (mode)
     {
         case ShallowCopy:
