@@ -34,7 +34,11 @@
 #ifndef _EIGENFACES_H_
 #define _EIGENFACES_H_
 
+// C++ includes
+
 #include <string>
+
+// Local includes
 
 #include "LibFaceConfig.h"
 #include "LibFaceCore.h"

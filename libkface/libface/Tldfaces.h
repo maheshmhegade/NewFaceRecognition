@@ -56,10 +56,10 @@ public:
     Tldface();
    ~Tldface();
 
-    int writeModelTofile(IplImage* const, const char* const)           const;
-    int updateDatabase(IplImage* const, const char* const)             const;
-    float getRecognitionConfidence(IplImage* const, const char* const) const;
-    IplImage* QImage2IplImage(const QImage&)                           const;
+    int       writeModelTofile(IplImage* const, const char* const)         const;
+    int       updateDatabase(IplImage* const, const char* const)           const;
+    float     getRecognitionConfidence(IplImage* const, const char* const) const;
+    IplImage* QImage2IplImage(const QImage&)                               const;
 
 private:
 

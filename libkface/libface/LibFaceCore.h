@@ -59,6 +59,7 @@ public:
      * @returns Returns a map of configuration names and their data.
      */
     virtual std::map<std::string, std::string> getConfig() = 0;
+
     /**
      * Abstract method for loading config data from a map with keys as string and data
      * as strings. This needs to be of the same format as returned by getConfig() method.
@@ -69,7 +70,7 @@ public:
 
     virtual int loadConfig(const std::string& dir)  = 0;
 
-    virtual int saveConfig(const std::string& dir)  = 0;
+    virtual int saveConfig(const std::string& dir) = 0;
 
     /**
      * Abstract method for updating the system with new Face object.
@@ -103,9 +104,9 @@ public:
     virtual std::vector<Face> detectFaces(const IplImage* const inputImage, const CvSize& originalSize = cvSize(0,0)) = 0;
     virtual std::vector<Face> detectFaces(const std::string& filename) = 0;
     virtual double accuracy() const = 0;
-    virtual void setAccuracy(double value) = 0;
+    virtual void   setAccuracy(double value) = 0;
     virtual double specificity() const = 0;
-    virtual void setSpecificity(double value) = 0;
+    virtual void   setSpecificity(double value) = 0;
 };
 
 } // namespace libface

@@ -36,7 +36,11 @@
 #pragma warning( disable : 4996 )
 #endif // WIN32
 
+// C ANSI includes
+
 #include <sys/stat.h>
+
+// C++ includes
 
 #include <ctime>
 #include <cctype>
@@ -49,6 +53,8 @@
 #include <sstream>
 #include <algorithm>
 #include <iterator>
+
+// Local includes
 
 #include "libopencv.h"
 
