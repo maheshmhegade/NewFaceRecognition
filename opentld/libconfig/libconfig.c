@@ -90,7 +90,7 @@ static void __config_locale_override(void)
   locale_t loc = newlocale(LC_NUMERIC_MASK, "C", NULL);
   uselocale(loc);
 
-#elif ((defined HAVE_NEWLOCALE) && (defined HAVE_USELOCALE))
+#elif ((defined(linux)) || (defined(__linux)) || (defined(__linux__))) /*((defined HAVE_NEWLOCALE) && (defined HAVE_USELOCALE))*/
 
   locale_t loc = newlocale(LC_NUMERIC, "C", NULL);
   uselocale(loc);
@@ -111,7 +111,7 @@ static void __config_locale_restore(void)
 
     _configthreadlocale(_DISABLE_PER_THREAD_LOCALE);
 
-#elif ((defined HAVE_USELOCALE) && (defined HAVE_FREELOCALE))
+#elif ((defined(linux)) || (defined(__linux)) || (defined(__linux__))) /*((defined HAVE_USELOCALE) && (defined HAVE_FREELOCALE))*/
 
   locale_t loc = uselocale(LC_GLOBAL_LOCALE);
   freelocale(loc);
