@@ -21,8 +21,6 @@
 
 #include <vector>
 
-#include "../libopentld/ImAcq.h"
-
 namespace tld
 {
 
@@ -45,12 +43,6 @@ public:
     bool m_loadModel; //!< if true, model specified by "modelPath" is loaded at startup
     bool m_selectManually; //!< if true, user can select initial bounding box (which then overrides the setting "initialBoundingBox")
     bool m_learningEnabled; //!< enables learning while processing
-    bool m_showOutput; //!< creates a window displaying results
-    bool m_showNotConfident; //!< show bounding box also if confidence is low
-    bool m_showColorImage; //!< shows color images instead of greyscale
-    bool m_showDetections; //!< shows detections
-    bool m_showForeground; //!< shows foreground
-    bool m_saveOutput; //!< specifies whether to save visual output
     bool m_alternating; //!< if set to true, detector is disabled while tracker is running.
     bool m_exportModelAfterRun; //!< if set to true, model is exported after run.
     int m_trajectory; //!< specifies the number of the last frames which are considered by the trajectory; 0 disables the trajectory
@@ -65,16 +57,9 @@ public:
     float m_thetaN;
     int m_seed;
     int m_minSize; //!< minimum size of scanWindows
-    int m_camNo; //!< Which camera to use
     float m_fps; //!< Frames per second
     float m_threshold; //!< threshold for determining positive results
     float m_proportionalShift; //!< proportional shift
-    std::string  m_imagePath; //!< path to the images or the video if m_method is IMACQ_VID or IMACQ_IMGS
-    std::string m_modelPath; //!< if modelPath is not set then either an initialBoundingBox must be specified or selectManually must be true.
-    std::string m_modelExportFile; //!< Path where model is saved on export.
-    std::string m_outputDir; //!< required if saveOutput = true, no default
-    std::string m_printResults; //!< path to the file were the results should be printed; NULL -> results will not be printed
-    std::string m_printTiming; //!< path to the file were the timings should be printed; NULL -> results will not be printed
     std::vector<int> m_initialBoundingBox; //!< Initial Bounding Box can be specified here
 };
 
