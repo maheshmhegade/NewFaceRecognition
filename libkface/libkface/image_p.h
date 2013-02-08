@@ -47,7 +47,8 @@ public:
     {
     }
 
-    Private(const Private& other) : QSharedData(other)
+    Private(const Private& other)
+        : QSharedData(other)
     {
         // this code is called of we want to detach()
         image = cvCloneImage(other.image);
@@ -73,8 +74,8 @@ public:
     ImageData(IplImage* const image) : image(image) {}
 
     ImageData& operator=(IplImage* const im)        { image = im; return *this; }
-    operator IplImage* ()                           { return image; }
-    operator const IplImage* () const               { return image; }
+    operator IplImage* ()                           { return image;             }
+    operator const IplImage* () const               { return image;             }
 
 public:
 
