@@ -555,6 +555,7 @@ static int __config_read(config_t *config, FILE *stream, const char *filename,
   struct scan_context scan_ctx;
   struct parse_context parse_ctx;
   YY_BUFFER_STATE buffer = NULL;
+  (void)buffer;
   int r;
 
   /* Reinitialize the config */
