@@ -70,7 +70,7 @@ public:
      * @param image The image in which faces are to be detected
      * @return A QList of detected Face's, with the extracted face images loaded into them.
      */
-    QList<Face> detectFaces(const Image& image);
+    QList<Face> detectFaces(const Image& image) const;
 
     /**
      * Set the accuracy and specificity of Face Detection.

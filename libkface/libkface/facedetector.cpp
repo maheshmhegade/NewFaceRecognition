@@ -105,7 +105,7 @@ FaceDetector::~FaceDetector()
 {
 }
 
-QList<Face> FaceDetector::detectFaces(const Image& image)
+QList<Face> FaceDetector::detectFaces(const Image& image) const
 {
     return d->database()->detectFaces(image);
 }

@@ -67,36 +67,6 @@ class KFACE_EXPORT Face
 public:
 
     /**
-     * Face constructor
-     */
-    Face();
-
-    /**
-     * Face constructor which constructs a face object out of a QRect and optionally a QImage.
-     * If no image is passed, it sets a blank image made by QImage()
-     * @param rect The QRect for the Face object
-     * @param image The QImage for the face image
-     */
-    explicit Face(const QRect& rect, const Image& image = Image());
-
-    /**
-     * Face constructor which constructs a face object from another Face.
-     * @param other The Face object
-     */
-    Face(const Face& other);
-
-    /** Assignment operator that assigns a KFace's data to another KFace
-     * @param other A reference to a KFace object
-     * @return A reference to the copied KFace object
-     */
-    Face& operator=(const Face& other);
-
-    /**
-     * Destructor
-     */
-    ~Face();
-
-    /**
      * This mode determines how the image data stored in the face is treated.
      */
     enum ImageOwnershipMode
@@ -129,6 +99,38 @@ public:
          */
         IgnoreData
     };
+
+public:
+
+    /**
+     * Face constructor
+     */
+    Face();
+
+    /**
+     * Face constructor which constructs a face object out of a QRect and optionally a QImage.
+     * If no image is passed, it sets a blank image made by QImage()
+     * @param rect The QRect for the Face object
+     * @param image The QImage for the face image
+     */
+    explicit Face(const QRect& rect, const Image& image = Image());
+
+    /**
+     * Face constructor which constructs a face object from another Face.
+     * @param other The Face object
+     */
+    Face(const Face& other);
+
+    /** Assignment operator that assigns a KFace's data to another KFace
+     * @param other A reference to a KFace object
+     * @return A reference to the copied KFace object
+     */
+    Face& operator=(const Face& other);
+
+    /**
+     * Destructor
+     */
+    ~Face();
 
    /**
      * Face constructor which constructs a face object from a libface::Face.

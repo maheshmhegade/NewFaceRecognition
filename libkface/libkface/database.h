@@ -7,7 +7,7 @@
  * @date  2010-06-16
  * @brief The Database class wraps the libface database
  *
- * @author Copyright (C) 2010 by Marcel Wiesweg
+ * @author Copyright (C) 2010-2013 by Marcel Wiesweg
  *         <a href="mailto:marcel dot wiesweg at gmx dot de">marcel dot wiesweg at gmx dot de</a>
  * @author Copyright (C) 2010 by Aditya Bhatt
  *         <a href="mailto:adityabhatt1991 at gmail dot com">adityabhatt1991 at gmail dot com</a>
@@ -62,6 +62,8 @@ public:
     };
     Q_DECLARE_FLAGS(InitFlags, InitFlag)
 
+public:
+
     /**
      * Constructor for Database
      * @param flags Flags that specify type of usage for the Database instance.
@@ -102,7 +104,7 @@ public:
      * @param image The image in which faces are to be detected
      * @return A QList of detected Face's, with the extracted face images loaded into them.
      */
-    QList<Face> detectFaces(const Image& image);
+    QList<Face> detectFaces(const Image& image) const;
 
     /**
      * Update the training database with a QList of Faces which hold the face images
@@ -111,7 +113,7 @@ public:
      * @param faces A QList of Face's, which hold the face image too, for updating the DB.
      * @return False if no faces were updated, due to an argument of size zero
      */
-    bool updateFaces(QList<Face>& faces, const QImage& ImageToTld);
+    bool updateFaces(QList<Face>& faces, const QImage& ImageToTld) const;
 
     /**
      * Clear the training database for a single name or id.
@@ -128,7 +130,7 @@ public:
      * @return A QList of "closeness" of recognized faces, in the same order as the argument;
      * or an empty list, if an error occurred or no recognition data is available.
      */
-    QList<double> recognizeFaces(QList<Face>& faces, const QImage& imageToTld);
+    QList<double> recognizeFaces(QList<Face>& faces, const QImage& imageToTld) const;
 
     /**
      * Returns the directory path of the config file

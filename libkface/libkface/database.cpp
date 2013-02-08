@@ -7,11 +7,11 @@
  * @date   2010-06-16
  * @brief  The Database class wraps the libface database
  *
- * @author Copyright (C) 2010 by Marcel Wiesweg
+ * @author Copyright (C) 2010-2013 by Marcel Wiesweg
  *         <a href="mailto:marcel dot wiesweg at gmx dot de">marcel dot wiesweg at gmx dot de</a>
  * @author Copyright (C) 2010 by Aditya Bhatt
  *         <a href="mailto:adityabhatt1991 at gmail dot com">adityabhatt1991 at gmail dot com</a>
- * @author Copyright (C) 2010 by Gilles Caulier
+ * @author Copyright (C) 2010-2013 by Gilles Caulier
  *         <a href="mailto:caulier dot gilles at gmail dot com">caulier dot gilles at gmail dot com</a>
  *
  * This program is free software; you can redistribute it
@@ -90,7 +90,7 @@ public:
     {
         try
         {
-            if (initFlags & Database::InitRecognition && configDirty)
+            if ((initFlags & Database::InitRecognition) && configDirty)
             {
                 libface->saveConfig(configPath.toStdString());
                 configDirty = false;
@@ -176,7 +176,7 @@ Database::~Database()
     // note: saveConfig is done in Priv destructor!
 }
 
-QList<Face> Database::detectFaces(const Image& image)
+QList<Face> Database::detectFaces(const Image& image) const
 {
     const IplImage* const img = image.imageData();
     //cvShowImage("show1",img );
@@ -212,7 +212,7 @@ QList<Face> Database::detectFaces(const Image& image)
     return faceList;
 }
 
-bool Database::updateFaces(QList<Face>& faces, const QImage& ImageToTld)
+bool Database::updateFaces(QList<Face>& faces, const QImage& ImageToTld) const
 {
     if(faces.isEmpty())
         return false;
@@ -240,6 +240,7 @@ bool Database::updateFaces(QList<Face>& faces, const QImage& ImageToTld)
     }
 
     std::vector<int> ids;
+
     try
     {
         ids = d->libface->update(&faceVec);
@@ -272,7 +273,7 @@ bool Database::updateFaces(QList<Face>& faces, const QImage& ImageToTld)
     return true;
 }
 
-QList<double> Database::recognizeFaces(QList<Face>& faces, const QImage& imageToTld)
+QList<double> Database::recognizeFaces(QList<Face>& faces, const QImage& imageToTld) const
 {
     QList<double> closeness;
 
@@ -308,22 +309,24 @@ QList<double> Database::recognizeFaces(QList<Face>& faces, const QImage& imageTo
         faces[i].setId(result.at(i).first);
         closeness.append(result.at(i).second);
 
+/*
         // Locate the name from the hash, pity we don't have a bi-directional hash in Qt
-        /*
+
         QHashIterator<QString, int> it(d->hash);
         it.toFront();
 
         while(it.hasNext())
         {
             it.next();
-           cout << it.key().toStdString() << endl;
+            cout << it.key().toStdString() << endl;
+
             if(it.value() == faces[i].id())
             {
                 faces[i].setName(it.key());
                 break;
             }
         }
-        */
+*/
         vector< string> namesInDatabase;
         vector<float> recognitionConfidence;
 
