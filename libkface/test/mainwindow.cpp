@@ -29,77 +29,116 @@
 
 #include "mainwindow.moc"
 #include "ui_mainwindow.h"
+
+// C++ includes
+
 #include <cstdlib>
+#include <iostream>
+
 // Qt includes
 
-#include <QDebug>
 #include <QLayout>
 #include <QFormLayout>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QGraphicsPixmapItem>
+#include <QFileDialog>
+#include <QLabel>
 
 // KDE include
-#include <iostream>
+
 #include <kdebug.h>
 #include <kfiledialog.h>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+
+// libkface includes
+
+#include "../libkface/database.h"
+#include "../libkface/face.h"
+#include "../libkface/kfaceutils.h"
+
+// Local includes
+
+#include "faceitem.h"
 
 using namespace tld;
-
 using namespace std;
 using namespace KFaceIface;
 
-MainWindow::MainWindow(QWidget* const parent)
-    : QMainWindow(parent),
-      ui(new Ui::MainWindow)
+class MainWindow::Private
 {
-    lastPhotoItem = 0;
-    scale         = 0.0;
+public:
 
-    ui->setupUi(this);
+    Private()
+    {
+        ui            = new Ui::MainWindow;
+        myScene       = 0;
+        myView        = 0;
+        lastPhotoItem = 0;
+        database      = 0;
+        scale         = 0.0;
+    }
 
-    connect(ui->openImageBtn, SIGNAL(clicked()),
+    Ui::MainWindow*      ui;
+    QGraphicsScene*      myScene;
+    QGraphicsView*       myView;
+    QGraphicsPixmapItem* lastPhotoItem;
+    QList<FaceItem*>     faceitems;
+    Database*            database;
+    QImage               currentPhoto;
+    double               scale;
+    QList<Face>          currentFaces;
+    QString              lastFileOpenPath;
+};
+
+MainWindow::MainWindow(QWidget* const parent)
+    : QMainWindow(parent), d(new Private)
+{
+    d->ui->setupUi(this);
+
+    connect(d->ui->openImageBtn, SIGNAL(clicked()),
             this, SLOT(openImage()));
 
-    connect(ui->openConfigBtn, SIGNAL(clicked()),
+    connect(d->ui->openConfigBtn, SIGNAL(clicked()),
             this, SLOT(openConfig()));
 
-    connect(ui->detectFacesBtn, SIGNAL(clicked()),
+    connect(d->ui->detectFacesBtn, SIGNAL(clicked()),
             this, SLOT(detectFaces()));
 
-    connect(ui->recogniseBtn, SIGNAL(clicked()),
+    connect(d->ui->recogniseBtn, SIGNAL(clicked()),
             this, SLOT(recognise()));
 
-    connect(ui->updateDatabaseBtn, SIGNAL(clicked()),
+    connect(d->ui->updateDatabaseBtn, SIGNAL(clicked()),
             this, SLOT(updateConfig()));
 
-    connect(ui->horizontalSlider, SIGNAL(valueChanged(int)),
+    connect(d->ui->horizontalSlider, SIGNAL(valueChanged(int)),
             this, SLOT(updateAccuracy()));
 
-    myScene                   = new QGraphicsScene();
+    d->myScene                   = new QGraphicsScene();
     QGridLayout* const layout = new QGridLayout;
-    myView                    = new QGraphicsView(myScene);
+    d->myView                    = new QGraphicsView(d->myScene);
 
-    myView->setCacheMode(QGraphicsView::CacheBackground);
-    myScene->setItemIndexMethod(QGraphicsScene::NoIndex);
+    d->myView->setCacheMode(QGraphicsView::CacheBackground);
+    d->myScene->setItemIndexMethod(QGraphicsScene::NoIndex);
 
     setMouseTracking(true);
-    layout->addWidget(myView);
+    layout->addWidget(d->myView);
 
-    ui->widget->setLayout(layout);
+    d->ui->widget->setLayout(layout);
 
-    myView->show();
+    d->myView->show();
 
-    database = new Database(Database::InitAll, ".");
+    d->database = new Database(Database::InitAll, ".");
 
-    ui->configLocation->setText(QDir::currentPath());
-    ui->horizontalSlider->setValue(database->detectionAccuracy());
+    d->ui->configLocation->setText(QDir::currentPath());
+    d->ui->horizontalSlider->setValue(d->database->detectionAccuracy());
 
-    lastFileOpenPath = QDir::currentPath();
+    d->lastFileOpenPath = QDir::currentPath();
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete d->ui;
+    delete d;
 }
 
 void MainWindow::changeEvent(QEvent* e)
@@ -109,7 +148,7 @@ void MainWindow::changeEvent(QEvent* e)
     switch (e->type())
     {
         case QEvent::LanguageChange:
-            ui->retranslateUi(this);
+            d->ui->retranslateUi(this);
             break;
         default:
             break;
@@ -118,7 +157,7 @@ void MainWindow::changeEvent(QEvent* e)
 
 void MainWindow::openImage()
 {
-    QString file = KFileDialog::getOpenFileName(lastFileOpenPath,
+    QString file = KFileDialog::getOpenFileName(d->lastFileOpenPath,
                                                 "Image Files (*.png *.jpg *.bmp *.pgm)",
                                                 this,
                                                 "Open Image");
@@ -126,28 +165,28 @@ void MainWindow::openImage()
     if (file.isEmpty())
         return;
 
-    lastFileOpenPath = QFileInfo(file).absolutePath();
+    d->lastFileOpenPath = QFileInfo(file).absolutePath();
 
     clearScene();
 
     kDebug() << "Opened file " << file.toAscii().data();
 
     QPixmap* const photo = new QPixmap(file);
-    lastPhotoItem        = new QGraphicsPixmapItem(*photo);
-    currentPhoto         = photo->toImage();
+    d->lastPhotoItem        = new QGraphicsPixmapItem(*photo);
+    d->currentPhoto         = photo->toImage();
 
-    if(1.0*ui->widget->width()/photo->width() < 1.*ui->widget->height()/photo->height())
+    if(1.0*d->ui->widget->width()/photo->width() < 1.*d->ui->widget->height()/photo->height())
     {
-        scale = 1.0*ui->widget->width()/photo->width();
+        d->scale = 1.0*d->ui->widget->width()/photo->width();
     }
     else
     {
-        scale = 1.0*ui->widget->height()/photo->height();
+        d->scale = 1.0*d->ui->widget->height()/photo->height();
     }
 
-    lastPhotoItem->setScale(scale);
+    d->lastPhotoItem->setScale(d->scale);
 
-    myScene->addItem(lastPhotoItem);
+    d->myScene->addItem(d->lastPhotoItem);
 }
 
 void MainWindow::openConfig()
@@ -156,52 +195,52 @@ void MainWindow::openConfig()
                                                           this,
                                                           "Select Config Directory");
 
-    ui->configLocation->setText(directory);
+    d->ui->configLocation->setText(directory);
 
-    database = new Database(Database::InitAll, directory);
+    d->database = new Database(Database::InitAll, directory);
 }
 
 void MainWindow::detectFaces()
 {
-    currentFaces.clear();
+    d->currentFaces.clear();
 
-    currentFaces = database->detectFaces(currentPhoto);
+    d->currentFaces = d->database->detectFaces(d->currentPhoto);
     Face face;
-    kDebug() << "libkface detected : " << currentFaces.size() << " faces.";
+    kDebug() << "libkface detected : " << d->currentFaces.size() << " faces.";
 
-    foreach(FaceItem* const item, faceitems)
+    foreach(FaceItem* const item, d->faceitems)
         item->setVisible(false);
 
-    faceitems.clear();
+    d->faceitems.clear();
 
-    for(int i = 0; i < currentFaces.size(); ++i)
+    for(int i = 0; i < d->currentFaces.size(); ++i)
     {
-        face = currentFaces[i];
-        faceitems.append(new FaceItem(0, myScene, face.toRect(), scale));
+        face = d->currentFaces[i];
+        d->faceitems.append(new FaceItem(0, d->myScene, face.toRect(), d->scale));
         kDebug() << face.toRect()<<endl;
     }
 }
 
 void MainWindow::updateConfig()
 {
-    kDebug() << "Path of config directory = " << database->configPath();
+    kDebug() << "Path of config directory = " << d->database->configPath();
 
-    // Assign the text of the faceitems to the name of each face. When there is no text, drop that face from currentfaces.
+    // Assign the text of the d->faceitems to the name of each face. When there is no text, drop that face from currentfaces.
     QList<Face> updateList;
 
-    for(int i = 0 ; i <currentFaces.size(); ++i)
+    for(int i = 0 ; i <d->currentFaces.size(); ++i)
     {
-        if(faceitems[i]->text() != "?")
+        if(d->faceitems[i]->text() != "?")
         {
-            currentFaces[i].setName(faceitems[i]->text());
-            updateList.append(currentFaces.at(i));
+            d->currentFaces[i].setName(d->faceitems[i]->text());
+            updateList.append(d->currentFaces.at(i));
         }
     }
 
-    if( database->updateFaces(updateList,currentPhoto) )
+    if( d->database->updateFaces(updateList,d->currentPhoto) )
     {
         kDebug() << "Trained";
-        database->saveConfig();
+        d->database->saveConfig();
     }
     else
     {
@@ -211,34 +250,34 @@ void MainWindow::updateConfig()
 
 void MainWindow::updateAccuracy()
 {
-    int value = ui->horizontalSlider->value();
-    ui->lcdNumber->display(value);
-    database->setDetectionAccuracy(value);
+    int value = d->ui->horizontalSlider->value();
+    d->ui->lcdNumber->display(value);
+    d->database->setDetectionAccuracy(value);
 }
 
 void MainWindow::clearScene()
 {
-    QList<QGraphicsItem*> list = myScene->items();
+    QList<QGraphicsItem*> list = d->myScene->items();
 
     for(int i=0; i<list.size(); i++)
     {
-        myScene->removeItem(list.at(i));
+        d->myScene->removeItem(list.at(i));
     }
 }
 
 void MainWindow::recognise()
 {
     printf("1\n");
-    QList<double> closeness = database->recognizeFaces(currentFaces,currentPhoto);
+    QList<double> closeness = d->database->recognizeFaces(d->currentFaces,d->currentPhoto);
 
     if(closeness.isEmpty())
         return;
 
-    for(int i = 0; i < currentFaces.size(); ++i)
+    for(int i = 0; i < d->currentFaces.size(); ++i)
     {
-        faceitems[i]->suggest(currentFaces[i].name());
-        kDebug() << "Face #"<< i+1 << " is closest to the person with ID " << currentFaces[i].id()
-                 << " and name "<< currentFaces[i].name()
+        d->faceitems[i]->suggest(d->currentFaces[i].name());
+        kDebug() << "Face #"<< i+1 << " is closest to the person with ID " << d->currentFaces[i].id()
+                 << " and name "<< d->currentFaces[i].name()
                  << " with a distance of "<< closeness[i];
     }
 }
