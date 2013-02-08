@@ -1,5 +1,4 @@
 ADD_LIBRARY(libopentld
-            ImAcq.cpp
             BB.cpp
             BBPredict.cpp
             FBTrack.cpp

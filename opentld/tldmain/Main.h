@@ -28,8 +28,6 @@
 #define MAIN_H_
 
 #include "../libopentld/TLD.h"
-#include "../libopentld/ImAcq.h"
-#include "Gui.h"
 
 enum Retval
 {
@@ -41,50 +39,21 @@ class Main
 {
 public:
     tld::TLD *tld;
-    ImAcq *imAcq;
-    tld::Gui *gui;
-    bool showOutput;
-    const char *printResults;
-    const char *saveDir;
     double threshold;
-    bool showForeground;
-    bool showNotConfident;
-    bool selectManually;
     int *initialBB;
-    bool reinit;
-    bool exportModelAfterRun;
-    bool loadModel;
-    const char *modelPath;
-    const char *modelExportFile;
     int seed;
 
     Main()
     {
         tld = new tld::TLD();
-        showOutput = 1;
-        printResults = NULL;
-        saveDir = ".";
         threshold = 0.5;
-        showForeground = 0;
-
-        selectManually = 0;
-
         initialBB = NULL;
-        showNotConfident = true;
-
-        reinit = 0;
-
-        loadModel = false;
-
-        exportModelAfterRun = false;
-        modelExportFile = "model";
         seed = 0;
     }
 
     ~Main()
     {
         delete tld;
-        imAcqFree(imAcq);
     }
 
     void doWork(IplImage* , const char*, int mode, float *recognitionCaonfidence);

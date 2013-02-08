@@ -1,6 +1,5 @@
 ADD_LIBRARY(tldmain
             Config.cpp
-            Gui.cpp
             Main.cpp
             Settings.cpp
            )
@@ -8,5 +7,4 @@ ADD_LIBRARY(tldmain
 TARGET_LINK_LIBRARIES(tldmain
                       libopentld
                       cvblobs
-                      libconfig
                      )

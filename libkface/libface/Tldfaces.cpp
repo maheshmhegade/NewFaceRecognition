@@ -45,27 +45,18 @@ public:
     Private()
     {
         main  = 0;
-        imAcq = 0;
-        gui   = 0;
     }
 
     Main*  main;
     Config config;
-    ImAcq* imAcq;
-    Gui*   gui;
 };
 
 Tldface::Tldface()
     : d(new Private)
 {
     d->main        = new Main();
-    d->imAcq       = imAcqAlloc();
-    d->gui         = new Gui();
-    d->main->gui   = d->gui;
-    d->main->imAcq = d->imAcq;
     d->config.configure(d->main);
     srand(d->main->seed);
-    imAcqInit(d->imAcq);
 }
 
 Tldface::~Tldface()

@@ -36,14 +36,11 @@
 
 // OpenTLD includes
 
-#include "../../opentld/libopentld/ImAcq.h"
 #include "../../opentld/tldmain/Config.h"
 #include "../../opentld/tldmain/Main.h"
-#include "../../opentld/tldmain/Gui.h"
 
 using namespace tld;
 using           tld::Config;
-using           tld::Gui;
 using           tld::Settings;
 
 namespace libface
