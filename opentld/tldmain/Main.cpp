@@ -1,8 +1,6 @@
 #include "Main.h"
 
 #include "Config.h"
-#include "../libopentld/ImAcq.h"
-#include "Gui.h"
 #include "../libopentld/TLDUtil.h"
 #include <fstream>
 #include <iostream>

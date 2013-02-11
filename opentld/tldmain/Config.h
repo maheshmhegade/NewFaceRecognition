@@ -23,9 +23,6 @@
 #include <iostream>
 #include <string>
 
-#include "../libconfig/libconfig.h++"
-
-#include "../libopentld/ImAcq.h"
 #include "Settings.h"
 #include "Main.h"
 
@@ -54,7 +51,6 @@ public:
      * @param argv command line arguments
      * @return PROGRAM_EXIT when an error occurred, SUCCESS if not
      */
-    int init(int argc, char **argv);
 
     /**
      * Configures the CamNode, ImAcq and TldClassifier.
@@ -65,7 +61,6 @@ public:
      */
     int configure(Main *main);
 private:
-    libconfig::Config m_cfg; //!< libconfig++
     std::string m_configPath; //!< path to the config file
     Settings m_settings; //!< adjusted settings
     ///@{

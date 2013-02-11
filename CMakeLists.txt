@@ -193,6 +193,7 @@ REMOVE_DEFINITIONS(-DQT_NO_STL)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/version.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
 SET(kface_LIB_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/database.cpp
+                   ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/tlddatabase.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/face.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/kfaceutils.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/image.cpp
@@ -207,7 +208,7 @@ TARGET_LINK_LIBRARIES(kface ${KDE4_KDECORE_LIBS}
                             ${QT_QTGUI_LIBRARY}
                             ${LIBFACE_LIBRARIES}
                             ${OpenCV_LIBRARIES}
-                            tldmain)
+                            tldmain sqlite3)
 SET_TARGET_PROPERTIES(kface PROPERTIES VERSION ${KFACE_LIB_SO_VERSION_STRING}
                             SOVERSION ${KFACE_LIB_SO_CUR_VERSION})
 
