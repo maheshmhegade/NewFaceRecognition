@@ -6,7 +6,7 @@
 # @date   2010-06-16
 # @brief  LibFace library interface for KDE
 #
-# @author Copyright (C) 2010-2012 by Gilles Caulier
+# @author Copyright (C) 2010-203 by Gilles Caulier
 #         <a href="mailto:caulier dot gilles at gmail dot com">caulier dot gilles at gmail dot com</a>
 #
 # This program is free software; you can redistribute it
@@ -23,38 +23,36 @@
 # ============================================================
 
 PROJECT(libkface)
-cmake_minimum_required(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-find_package(OpenCV REQUIRED)
+FIND_PACKAGE(OpenCV REQUIRED)
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
-subdirs(opentld/cvblobs)
-subdirs(opentld/libconfig)
-subdirs(opentld/libopentld)
-subdirs(opentld/tldmain)
+SUBDIRS(opentld/cvblobs)
+SUBDIRS(opentld/libconfig)
+SUBDIRS(opentld/libopentld)
+SUBDIRS(opentld/tldmain)
 
-link_directories(${OpenCV_LIB_DIR})
+LINK_DIRECTORIES(${OpenCV_LIB_DIR})
 
-include_directories(main ${OpenCV_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(main ${OpenCV_INCLUDE_DIRS})
 
 #build type
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING
+IF(NOT CMAKE_BUILD_TYPE)
+    SET(CMAKE_BUILD_TYPE Release CACHE STRING
         "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
         FORCE)
-endif(NOT CMAKE_BUILD_TYPE)
+ENDIF(NOT CMAKE_BUILD_TYPE)
 
+IF(NOT WIN32 AND NOT APPLE)
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp -fPIC")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -fPIC")
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lgomp")
+ENDIF()
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp -fPIC")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -fPIC")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lgomp")
-
-
-
-configure_file("${PROJECT_SOURCE_DIR}/OpenTLDConfig.cmake.in" "${PROJECT_BINARY_DIR}/OpenTLDConfig.cmake" @ONLY)
-
+CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/OpenTLDConfig.cmake.in" "${PROJECT_BINARY_DIR}/OpenTLDConfig.cmake" @ONLY)
 
 
 MESSAGE(STATUS "----------------------------------------------------------------------------------")
@@ -117,7 +115,7 @@ ENDIF (NOT OpenCV_INCLUDE_DIRS)
 INCLUDE_DIRECTORIES(${OpenCV_INCLUDE_DIRS})
 IF (LIBFACE_FOUND)
   INCLUDE_DIRECTORIES(${LIBFACE_INCLUDE_DIR})
-endif (LIBFACE_FOUND)
+ENDIF (LIBFACE_FOUND)
 
 # =======================================================
 # Information to update before to release this library.
