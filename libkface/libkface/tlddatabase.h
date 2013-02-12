@@ -10,9 +10,7 @@ namespace KFaceIface
 class Tlddatabase
 {
 public:
-
     Tlddatabase();
-
     bool PrevDatabaseExists;
 
     sqlite3 *faceDatabase;

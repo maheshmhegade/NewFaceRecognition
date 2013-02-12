@@ -49,6 +49,7 @@ public:
 
     Main*  main;
     Config config;
+    Tlddatabase *tldDatabaseObject;
 };
 
 Tldface::Tldface()
@@ -57,6 +58,7 @@ Tldface::Tldface()
     d->main        = new Main();
     d->config.configure(d->main);
     srand(d->main->seed);
+    d->tldDatabaseObject = new Tlddatabase();
 }
 
 Tldface::~Tldface()

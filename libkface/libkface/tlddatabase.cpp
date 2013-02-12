@@ -3,6 +3,25 @@
 namespace KFaceIface
 
 {
+Tlddatabase::Tlddatabase()
+{
+    initialiseDatabase = "CREATE TABLE allFaces(ID INTEGER,FACENAME TEXT,MODELDATA BLOB)";
+
+    sqlite3_open("faceDatabase.db",&faceDatabase); //open database
+
+//    PrevDatabaseExists =                              //check for previous data in database
+
+    if(~PrevDatabaseExists)
+    {
+        sqlite3_prepare_v2(faceDatabase, initialiseDatabase, -1, &databasePreparingObject,NULL );
+        sqlite3_step(databasePreparingObject);
+    }
+
+    //sqlite3_prepare_v2(faceDatabase,,-1,&TldPreparingObject,NULL);
+
+
+}
+
 class Tlddatabase::unitFaceModel
 {
 public:
@@ -96,25 +115,6 @@ public:
 
     }
 };
-
-Tlddatabase::Tlddatabase()
-{
-    initialiseDatabase = "CREATE TABLE allFaces(ID INTEGER,FACENAME TEXT,MODELDATA BLOB)";
-
-    sqlite3_open("faceDatabase.db",&faceDatabase); //open database
-
-//    PrevDatabaseExists =                              //check for previous data in database
-
-    if(~PrevDatabaseExists)
-    {
-        sqlite3_prepare_v2(faceDatabase, initialiseDatabase, -1, &databasePreparingObject,NULL );
-        sqlite3_step(databasePreparingObject);
-    }
-
-    //sqlite3_prepare_v2(faceDatabase,,-1,&TldPreparingObject,NULL);
-
-
-}
 
 Tlddatabase::~Tlddatabase()
 {
