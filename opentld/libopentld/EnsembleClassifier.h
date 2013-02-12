@@ -72,6 +72,7 @@ public:
     void nextIteration(const cv::Mat &img);
     void classifyWindow(int windowIdx);
     void updatePosterior(int treeIdx, int idx, int positive, int amount);
+    void callupdatePosterior(int argone,int arrarg[3]);
     void learn(int *boundary, int positive, int *featureVector);
     bool filter(int i);
 };

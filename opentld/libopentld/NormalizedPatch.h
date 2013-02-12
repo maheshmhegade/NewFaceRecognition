@@ -35,6 +35,7 @@ class NormalizedPatch
 {
 public:
     float values[TLD_PATCH_SIZE *TLD_PATCH_SIZE];
+    float *imageData;
     bool positive;
 };
 

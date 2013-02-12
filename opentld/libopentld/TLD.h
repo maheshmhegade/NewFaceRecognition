@@ -69,6 +69,7 @@ public:
     void writeToFile(const char *path);
     void readFromFile(const char *path);
     void getObjModel(Tlddatabase::unitFaceModel *);
+    Tlddatabase::unitFaceModel * putObjModel();
 };
 
 } /* namespace tld */

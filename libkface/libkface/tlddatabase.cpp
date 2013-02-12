@@ -28,16 +28,15 @@ Tlddatabase::unitFaceModel::unitFaceModel()
 }
 Tlddatabase::unitFaceModel::unitTree::unitTree()
 {
-    int numFeatures;
-    int numLeaves;
+
 }
 Tlddatabase::unitFaceModel::unitTree::unitFeature::unitFeature()
 {
-    float unitFeaturedata[4];
+
 }
 Tlddatabase::unitFaceModel::unitTree::unitLeave::unitLeave()
 {
-    int unitLeavedata[3];
+
 }
 
 

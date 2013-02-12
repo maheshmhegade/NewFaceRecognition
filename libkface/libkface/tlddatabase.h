@@ -45,16 +45,23 @@ public:
         {
         public:
             unitTree();
-            int numTrees;
+
+            int numFeatures;
+
+            int numLeaves;
+
             class unitFeature
             {
             public:
                 unitFeature();
+                float unitFeaturedata[4];
             };
             class unitLeave
             {
             public:
                 unitLeave();
+                int unitLeavePositivedata[3];
+                int unitLeaveNegativedata[3];
             };
             QList<unitLeave> allLeaves;
 
