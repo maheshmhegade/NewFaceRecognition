@@ -601,6 +601,19 @@ void TLD::readFromFile(const char *path)
     ec->initFeatureOffsets();
 
 }
+void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
+{
+    NNClassifier *nn = detectorCascade->nnClassifier;
+    EnsembleClassifier *ec = detectorCascade->ensembleClassifier;
+
+    detectorCascade->objWidth = faceModel->objWidth;
+    detectorCascade->objHeight = faceModel->objWidth;
+    detectorCascade->varianceFilter->minVar = faceModel->minVar;
+    for (int i=0 ;i < faceModel->numPositivePatches ;i++)
+    {
+     //   detectorCascade->
+    }
+}
 
 
 } /* namespace tld */

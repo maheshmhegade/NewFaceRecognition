@@ -9,7 +9,7 @@ Tlddatabase::Tlddatabase()
 
     sqlite3_open("faceDatabase.db",&faceDatabase); //open database
 
-//    PrevDatabaseExists =                              //check for previous data in database
+    //    PrevDatabaseExists =                              //check for previous data in database
 
     if(~PrevDatabaseExists)
     {
@@ -22,99 +22,24 @@ Tlddatabase::Tlddatabase()
 
 }
 
-class Tlddatabase::unitFaceModel
+Tlddatabase::unitFaceModel::unitFaceModel()
 {
-public:
 
-    unitFaceModel()
-    {
-        int objWidth;
+}
+Tlddatabase::unitFaceModel::unitTree::unitTree()
+{
+    int numFeatures;
+    int numLeaves;
+}
+Tlddatabase::unitFaceModel::unitTree::unitFeature::unitFeature()
+{
+    float unitFeaturedata[4];
+}
+Tlddatabase::unitFaceModel::unitTree::unitLeave::unitLeave()
+{
+    int unitLeavedata[3];
+}
 
-        int objHeight;
-
-        float minVar;
-
-        int numPositivePatches;
-
-        int numNegativePatches;
-    }
-    class unitPositivePatch
-    {
-    public:
-        unitPositivePatch()
-        {
-            float unitPositivePatchdata[225];
-        }
-        ~unitPositivePatch()
-        {
-
-        }
-    };
-
-    class unitNegativePatch
-    {
-    public:
-        unitNegativePatch()
-        {
-             float unitNegativePatchdata[225];
-        }
-        ~unitNegativePatch()
-        {
-
-        }
-    };
-
-    class unitTree
-    {
-    public:
-        unitTree()
-        {
-            int numFeatures;
-            int numLeaves;
-        }
-        class unitFeature
-        {
-        public:
-            unitFeature()
-            {
-                float unitFeaturedata[4];
-            }
-            ~unitFeature()
-            {
-
-            }
-        };
-        class unitLeave
-        {
-        public:
-            unitLeave()
-            {
-                int unitLeavedata[3];
-            }
-            ~unitLeave()
-            {
-
-            }
-        };
-        QList<unitLeave> allLeaves;
-
-        QList<unitFeature> allFeatures;
-        ~unitTree()
-        {
-
-        }
-    };
-    QList<unitPositivePatch> allPositivePatches;
-
-    QList<unitNegativePatch> allNegativePatches;
-
-    QList<unitTree> allTrees;
-
-    ~unitFaceModel()
-    {
-
-    }
-};
 
 Tlddatabase::~Tlddatabase()
 {

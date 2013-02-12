@@ -1,8 +1,10 @@
 #include <iostream>
 #include <sqlite3.h>
 #include <QList>
+#include "../../opentld/libopentld/NormalizedPatch.h"
 
 using namespace std;
+using namespace tld;
 
 namespace KFaceIface
 {
@@ -21,11 +23,46 @@ public:
 
     ~Tlddatabase();
 
-    class unitFaceModel;
+    class unitFaceModel
+    {
+    public:
+        unitFaceModel();
+        int objWidth;
 
-    QList<unitFaceModel> allFaceModel;
+        int objHeight;
+
+        float minVar;
+
+        int numPositivePatches;
+
+        int numNegativePatches;
+
+        class unitTree
+        {
+        public:
+            unitTree();
+            class unitFeature
+            {
+            public:
+                unitFeature();
+            };
+            class unitLeave
+            {
+            public:
+                unitLeave();
+            };
+            QList<unitLeave> allLeaves;
+
+            QList<unitFeature> allFeatures;
+        };
+
+        QList<NormalizedPatch> allPositivePatches;
+        QList<NormalizedPatch> allNegativePatches;
+        QList<unitTree> allTrees;
+
+        QList<unitFaceModel> allFaceModel;
+
+    };
 
 };
-
 }
-

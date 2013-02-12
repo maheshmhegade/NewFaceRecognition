@@ -31,6 +31,8 @@
 
 #include "MedianFlowTracker.h"
 #include "DetectorCascade.h"
+#include "../../libkface/libkface/tlddatabase.h"
+using namespace KFaceIface;
 
 namespace tld
 {
@@ -66,6 +68,7 @@ public:
     void processImage(const cv::Mat &img);
     void writeToFile(const char *path);
     void readFromFile(const char *path);
+    void getObjModel(Tlddatabase::unitFaceModel *);
 };
 
 } /* namespace tld */

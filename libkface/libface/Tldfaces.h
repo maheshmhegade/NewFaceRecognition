@@ -38,7 +38,7 @@
 
 #include "../../opentld/tldmain/Config.h"
 #include "../../opentld/tldmain/Main.h"
-#include "../libkface/tlddatabase.h"
+//#include "../libkface/tlddatabase.h"
 
 using namespace tld;
 using           tld::Config;
