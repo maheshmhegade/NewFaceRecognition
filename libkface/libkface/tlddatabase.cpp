@@ -18,14 +18,33 @@ public:
         int numPositivePatches;
 
         int numNegativePatches;
-
-        float unitPositivePatch[225];
-
-        float unitNegativePatch[225];
-
-        int numTrees;
-
     }
+    class unitPositivePatch
+    {
+    public:
+        unitPositivePatch()
+        {
+            float unitPositivePatchdata[225];
+        }
+        ~unitPositivePatch()
+        {
+
+        }
+    };
+
+    class unitNegativePatch
+    {
+    public:
+        unitNegativePatch()
+        {
+             float unitNegativePatchdata[225];
+        }
+        ~unitNegativePatch()
+        {
+
+        }
+    };
+
     class unitTree
     {
     public:
@@ -51,23 +70,24 @@ public:
         public:
             unitLeave()
             {
-                int unitFeaturedata[3];
+                int unitLeavedata[3];
             }
             ~unitLeave()
             {
 
             }
         };
-
         QList<unitLeave> allLeaves;
 
         QList<unitFeature> allFeatures;
-
         ~unitTree()
         {
 
         }
     };
+    QList<unitPositivePatch> allPositivePatches;
+
+    QList<unitNegativePatch> allNegativePatches;
 
     QList<unitTree> allTrees;
 
