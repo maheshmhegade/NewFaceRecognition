@@ -37,10 +37,15 @@ public:
 
         int numNegativePatches;
 
+        int numTrees;
+
+        int numFeatures;
+
         class unitTree
         {
         public:
             unitTree();
+            int numTrees;
             class unitFeature
             {
             public:

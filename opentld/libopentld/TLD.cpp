@@ -603,7 +603,6 @@ void TLD::readFromFile(const char *path)
 }
 void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
 {
-    NNClassifier *nn = detectorCascade->nnClassifier;
     EnsembleClassifier *ec = detectorCascade->ensembleClassifier;
 
     detectorCascade->objWidth = faceModel->objWidth;
@@ -611,8 +610,15 @@ void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
     detectorCascade->varianceFilter->minVar = faceModel->minVar;
     for (int i=0 ;i < faceModel->numPositivePatches ;i++)
     {
-     //   detectorCascade->
+        detectorCascade->nnClassifier->truePositives->push_back(faceModel->allNegativePatches[i]);
     }
+    for (int i = 0 ; i < faceModel->numNegativePatches ; i++)
+    {
+        detectorCascade->nnClassifier->falsePositives->push_back(faceModel->allNegativePatches[i]);
+    }
+    detectorCascade->numTrees = faceModel->numTrees;
+    detectorCascade->ensembleClassifier->numFeatures = faceModel->numFeatures;
+    detectorCascade->numFeatures = faceModel->numFeatures;
 }
 
 
