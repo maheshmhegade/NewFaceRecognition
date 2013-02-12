@@ -42,6 +42,7 @@ public:
     double threshold;
     int *initialBB;
     int seed;
+    Tlddatabase::unitFaceModel *faceModelObject;
 
     Main()
     {
@@ -57,6 +58,7 @@ public:
     }
 
     void doWork(IplImage* , const char*, int mode, float *recognitionCaonfidence);
+    void printFaceModel();
 };
 
 #endif /* MAIN_H_ */

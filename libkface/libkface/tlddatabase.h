@@ -55,6 +55,7 @@ public:
             public:
                 unitFeature();
                 float unitFeaturedata[4];
+                ~unitFeature();
             };
             class unitLeave
             {
@@ -62,19 +63,23 @@ public:
                 unitLeave();
                 int unitLeavePositivedata[3];
                 int unitLeaveNegativedata[3];
+                ~unitLeave();
             };
+            unitFeature *unitFeatureObject;
+            unitLeave *unitLeaveObject;
+
             QList<unitLeave> allLeaves;
-
             QList<unitFeature> allFeatures;
-        };
+            ~unitTree();
 
+        };
+        unitTree *unitTreeObject;
         QList<NormalizedPatch> allPositivePatches;
         QList<NormalizedPatch> allNegativePatches;
         QList<unitTree> allTrees;
-
-        QList<unitFaceModel> allFaceModel;
-
+        ~unitFaceModel();
     };
 
+    QList<unitFaceModel> allFaceModel;
 };
 }

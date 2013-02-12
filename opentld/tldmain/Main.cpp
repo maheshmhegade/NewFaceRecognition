@@ -29,7 +29,9 @@ void Main::doWork(IplImage* img,const char* faceModelFileName,int mode,float *re
         tld->selectObject(grey, &bb);
 
         cvtColor(cv::Mat(img), grey, CV_BGR2GRAY);
+        printFaceModel();
         tld->writeToFile(faceModelFileName);
+
     }
 
     else if(mode == 2)//return recognitionconfidence
@@ -42,4 +44,12 @@ void Main::doWork(IplImage* img,const char* faceModelFileName,int mode,float *re
     else
 
       return;
+}
+
+void Main::printFaceModel()
+{
+     faceModelObject = tld->putObjModel();
+     cout << faceModelObject->objWidth << endl;
+     cout << faceModelObject->objHeight << endl;
+     cout << faceModelObject->minVar << endl;
 }

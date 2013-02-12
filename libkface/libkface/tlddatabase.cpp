@@ -24,17 +24,35 @@ Tlddatabase::Tlddatabase()
 
 Tlddatabase::unitFaceModel::unitFaceModel()
 {
-
+    unitTreeObject = new unitTree;
+}
+Tlddatabase::unitFaceModel::~unitFaceModel()
+{
+    delete unitTreeObject;
 }
 Tlddatabase::unitFaceModel::unitTree::unitTree()
 {
-
+    unitFeatureObject = new unitFeature;
+    unitLeaveObject = new unitLeave;
+}
+Tlddatabase::unitFaceModel::unitTree::~unitTree()
+{
+    delete unitFeatureObject;
+    delete unitLeaveObject;
 }
 Tlddatabase::unitFaceModel::unitTree::unitFeature::unitFeature()
 {
 
 }
+Tlddatabase::unitFaceModel::unitTree::unitFeature::~unitFeature()
+{
+
+}
 Tlddatabase::unitFaceModel::unitTree::unitLeave::unitLeave()
+{
+
+}
+Tlddatabase::unitFaceModel::unitTree::unitLeave::~unitLeave()
 {
 
 }

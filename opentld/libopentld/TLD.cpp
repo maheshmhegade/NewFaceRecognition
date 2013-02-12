@@ -648,11 +648,12 @@ void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
 }
 Tlddatabase::unitFaceModel *TLD::putObjModel()
 {
-    Tlddatabase::unitFaceModel *faceModel;
+    Tlddatabase::unitFaceModel *faceModel = new Tlddatabase::unitFaceModel;
     faceModel->objWidth = detectorCascade->objWidth;
     faceModel->objWidth = detectorCascade->objHeight;
     faceModel->minVar = detectorCascade->varianceFilter->minVar;
 
+    cout << "here" << endl;
     faceModel->numPositivePatches = detectorCascade->nnClassifier->truePositives->size();
 
     for(size_t s = 0; s < detectorCascade->nnClassifier->truePositives->size(); s++)
@@ -672,13 +673,14 @@ Tlddatabase::unitFaceModel *TLD::putObjModel()
     faceModel->numTrees = detectorCascade->ensembleClassifier->numTrees;
     detectorCascade->numTrees = detectorCascade->ensembleClassifier->numTrees;
     detectorCascade->numFeatures = detectorCascade->ensembleClassifier->numFeatures;
-
+    cout << "i am here" << endl;
     for(int i = 0; i < detectorCascade->ensembleClassifier->numTrees; i++)
     {
         for(int j = 0; j < detectorCascade->ensembleClassifier->numFeatures; j++)
         {
             float *features = detectorCascade->ensembleClassifier->features + 4 * detectorCascade->ensembleClassifier->numFeatures * i + 4 * j;
-            memcpy(faceModel->allTrees[i].allFeatures[j].unitFeaturedata,features,sizeof(features));
+            memcpy(faceModel->unitTreeObject->unitFeatureObject->unitFeaturedata,features, sizeof(features));
+            faceModel->unitTreeObject->allFeatures.append(*faceModel->unitTreeObject->unitFeatureObject);
         }
 
         vector<TldExportEntry> list;
@@ -696,15 +698,15 @@ Tlddatabase::unitFaceModel *TLD::putObjModel()
                 list.push_back(entry);
             }
         }
-        faceModel->allTrees[i].numLeaves = list.size();
+        faceModel->unitTreeObject->numLeaves = list.size();
 
         for(size_t j = 0; j < list.size(); j++)
         {
             TldExportEntry entry = list.at(j);
             int tmpArray[3];tmpArray[0] = entry.index;tmpArray[1] = 1;tmpArray[2] = entry.P;
-            memcpy(faceModel->allTrees[i].allLeaves[j].unitLeavePositivedata,tmpArray,sizeof(tmpArray));
+            memcpy(faceModel->unitTreeObject->unitLeaveObject->unitLeavePositivedata,tmpArray,sizeof(tmpArray));
             tmpArray[1] = 0;tmpArray[2] = entry.N;
-            memcpy(faceModel->allTrees[i].allLeaves[j].unitLeaveNegativedata,tmpArray,sizeof(tmpArray));
+            memcpy(faceModel->unitTreeObject->unitLeaveObject->unitLeaveNegativedata,tmpArray,sizeof(tmpArray));
         }
     }
     return faceModel;
