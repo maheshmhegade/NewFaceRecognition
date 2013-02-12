@@ -1,4 +1,8 @@
+#include <iostream>
 #include <sqlite3.h>
+#include <QList>
+
+using namespace std;
 
 namespace KFaceIface
 {
@@ -6,11 +10,22 @@ namespace KFaceIface
 class Tlddatabase
 {
 public:
-    sqlite3 *faceDatabasepointer;
-    const char *test;
-    sqlite3_stmt *TldPreparingObject;
+
     Tlddatabase();
+
+    bool PrevDatabaseExists;
+
+    sqlite3 *faceDatabase;
+
+    const char *initialiseDatabase;
+
+    sqlite3_stmt *databasePreparingObject;
+
     ~Tlddatabase();
+
+    class unitFaceModel;
+
+    QList<unitFaceModel> allFaceModel;
 
 };
 
