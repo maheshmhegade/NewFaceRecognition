@@ -29,9 +29,8 @@ void Main::doWork(IplImage* img,const char* faceModelFileName,int mode,float *re
         tld->selectObject(grey, &bb);
 
         cvtColor(cv::Mat(img), grey, CV_BGR2GRAY);
-        printFaceModel();
         tld->writeToFile(faceModelFileName);
-
+        printFaceModel();
     }
 
     else if(mode == 2)//return recognitionconfidence
@@ -43,13 +42,47 @@ void Main::doWork(IplImage* img,const char* faceModelFileName,int mode,float *re
     }
     else
 
-      return;
+        return;
 }
 
-void Main::printFaceModel()
+void Main::printFaceModel()//for verifying object parameters
 {
-     faceModelObject = tld->putObjModel();
-     cout << faceModelObject->objWidth << endl;
-     cout << faceModelObject->objHeight << endl;
-     cout << faceModelObject->minVar << endl;
+    /*    faceModelObject = tld->putObjModel();
+    cout << faceModelObject->objWidth << endl;
+    cout << faceModelObject->objHeight << endl;
+    cout << faceModelObject->minVar << endl;
+    cout << faceModelObject->numPositivePatches <<endl;
+    cout << faceModelObject->numNegativePatches <<endl;
+    cout << faceModelObject->numFeatures <<endl;
+    cout << faceModelObject->numTrees <<endl;
+    for (int j=0;j < faceModelObject->numPositivePatches;j++)
+    {
+        for (int i=0; i< 225;i++)
+        {
+            cout << faceModelObject->allPositivePatches.at(j).imageData[i] << endl;
+        }
+    }
+    for (int i=0;i<faceModelObject->numTrees;i++)
+    {
+        for(int j=0;j<faceModelObject->numFeatures;j++)
+
+        {
+            for(int k=0;k<4;k++)
+            {
+                cout<<faceModelObject->allTrees.at(i).allFeatures.at(j).unitFeaturedata[k] <<"\t";
+            }
+            cout << endl;
+        }
+
+        for (int j=0;j<faceModelObject->allTrees.at(i).numLeaves;j++)
+        {
+            for(int k=0;k<3;k++)
+            {
+                cout<< faceModelObject->allTrees.at(i).allLeaves.at(j).unitLeavePositivedata[k]<< "\t";
+                cout <<faceModelObject->allTrees.at(i).allLeaves.at(j).unitLeaveNegativedata[k] << "\t";
+            }
+            cout << endl;
+        }
+    }
+*/
 }

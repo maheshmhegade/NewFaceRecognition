@@ -74,6 +74,7 @@ public:
 
         };
         unitTree *unitTreeObject;
+
         QList<NormalizedPatch> allPositivePatches;
         QList<NormalizedPatch> allNegativePatches;
         QList<unitTree> allTrees;

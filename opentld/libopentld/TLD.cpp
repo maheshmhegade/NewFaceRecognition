@@ -603,7 +603,7 @@ void TLD::readFromFile(const char *path)
 }
 void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
 {
-    EnsembleClassifier *ec = detectorCascade->ensembleClassifier;
+    /*  EnsembleClassifier *ec = detectorCascade->ensembleClassifier;
 
     detectorCascade->objWidth = faceModel->objWidth;
     detectorCascade->objHeight = faceModel->objWidth;
@@ -644,57 +644,62 @@ void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
     detectorCascade->initialised = true;
 
     detectorCascade->ensembleClassifier->initFeatureOffsets();
-
+*/
 }
 Tlddatabase::unitFaceModel *TLD::putObjModel()
 {
+    NNClassifier *nn = detectorCascade->nnClassifier;
+    EnsembleClassifier *ec = detectorCascade->ensembleClassifier;
+
     Tlddatabase::unitFaceModel *faceModel = new Tlddatabase::unitFaceModel;
     faceModel->objWidth = detectorCascade->objWidth;
-    faceModel->objWidth = detectorCascade->objHeight;
+    faceModel->objHeight = detectorCascade->objHeight;
     faceModel->minVar = detectorCascade->varianceFilter->minVar;
 
-    cout << "here" << endl;
-    faceModel->numPositivePatches = detectorCascade->nnClassifier->truePositives->size();
+    faceModel->numPositivePatches = nn->truePositives->size();
 
-    for(size_t s = 0; s < detectorCascade->nnClassifier->truePositives->size(); s++)
+    for(size_t s = 0; s < nn->truePositives->size(); s++)
     {
         NormalizedPatch patch;
-        patch.imageData = detectorCascade->nnClassifier->truePositives->at(s).values;
+        patch.imageData = nn->truePositives->at(s).values;
         faceModel->allPositivePatches.append(patch);
     }
-    faceModel->numNegativePatches = detectorCascade->nnClassifier->falsePositives->size();
+    faceModel->numNegativePatches = nn->falsePositives->size();
 
-    for(size_t s = 0; s < detectorCascade->nnClassifier->falsePositives->size(); s++)
+    for(size_t s = 0; s < nn->falsePositives->size(); s++)
     {
         NormalizedPatch patch;
-        patch.imageData = detectorCascade->nnClassifier->falsePositives->at(s).values;
+        patch.imageData = nn->falsePositives->at(s).values;
         faceModel->allNegativePatches.append(patch);
     }
-    faceModel->numTrees = detectorCascade->ensembleClassifier->numTrees;
-    detectorCascade->numTrees = detectorCascade->ensembleClassifier->numTrees;
-    detectorCascade->numFeatures = detectorCascade->ensembleClassifier->numFeatures;
-    cout << "i am here" << endl;
-    for(int i = 0; i < detectorCascade->ensembleClassifier->numTrees; i++)
+
+    faceModel->numTrees = ec->numTrees;
+    faceModel->numFeatures = ec->numFeatures;
+    detectorCascade->numTrees = ec->numTrees;
+    detectorCascade->numFeatures = ec->numFeatures;
+
+    for(int i = 0; i < ec->numTrees; i++)
     {
-        for(int j = 0; j < detectorCascade->ensembleClassifier->numFeatures; j++)
+        for(int j = 0; j < ec->numFeatures; j++)
         {
-            float *features = detectorCascade->ensembleClassifier->features + 4 * detectorCascade->ensembleClassifier->numFeatures * i + 4 * j;
-            memcpy(faceModel->unitTreeObject->unitFeatureObject->unitFeaturedata,features, sizeof(features));
+            float *features = ec->features + 4 * ec->numFeatures * i + 4 * j;
+            copyData(faceModel->unitTreeObject->unitFeatureObject->unitFeaturedata,features[0],features[1],features[2],features[3]);
+            // cout << features[0] << "\t"<< features[1] << "\t"<< features[2] << "\t"<< features[3] << "\t"<<endl;
             faceModel->unitTreeObject->allFeatures.append(*faceModel->unitTreeObject->unitFeatureObject);
         }
 
         vector<TldExportEntry> list;
 
-        for(int index = 0; index < pow(2.0f, detectorCascade->ensembleClassifier->numFeatures); index++)
+        for(int index = 0; index < pow(2.0f, ec->numFeatures); index++)
         {
-            int p = detectorCascade->ensembleClassifier->positives[i * detectorCascade->ensembleClassifier->numIndices + index];
+            int p = ec->positives[i * ec->numIndices + index];
 
             if(p != 0)
             {
                 TldExportEntry entry;
                 entry.index = index;
                 entry.P = p;
-                entry.N = detectorCascade->ensembleClassifier->negatives[i * detectorCascade->ensembleClassifier->numIndices + index];
+                entry.N = ec->negatives[i * ec->numIndices + index];
                 list.push_back(entry);
             }
         }
@@ -703,11 +708,11 @@ Tlddatabase::unitFaceModel *TLD::putObjModel()
         for(size_t j = 0; j < list.size(); j++)
         {
             TldExportEntry entry = list.at(j);
-            int tmpArray[3];tmpArray[0] = entry.index;tmpArray[1] = 1;tmpArray[2] = entry.P;
-            memcpy(faceModel->unitTreeObject->unitLeaveObject->unitLeavePositivedata,tmpArray,sizeof(tmpArray));
-            tmpArray[1] = 0;tmpArray[2] = entry.N;
-            memcpy(faceModel->unitTreeObject->unitLeaveObject->unitLeaveNegativedata,tmpArray,sizeof(tmpArray));
+            copyData(faceModel->unitTreeObject->unitLeaveObject->unitLeavePositivedata,entry.index,1,entry.P);
+            copyData(faceModel->unitTreeObject->unitLeaveObject->unitLeaveNegativedata,entry.index,0,entry.N);
+            faceModel->unitTreeObject->allLeaves.append(*faceModel->unitTreeObject->unitLeaveObject);
         }
+        faceModel->allTrees.append(*faceModel->unitTreeObject);
     }
     return faceModel;
 }
