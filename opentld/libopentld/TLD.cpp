@@ -680,12 +680,13 @@ Tlddatabase::unitFaceModel *TLD::putObjModel()
 
     for(int i = 0; i < ec->numTrees; i++)
     {
+        Tlddatabase::unitFaceModel::unitTree *myunitTreeObject = new Tlddatabase::unitFaceModel::unitTree;
         for(int j = 0; j < ec->numFeatures; j++)
         {
             float *features = ec->features + 4 * ec->numFeatures * i + 4 * j;
-            copyData(faceModel->unitTreeObject->unitFeatureObject->unitFeaturedata,features[0],features[1],features[2],features[3]);
+            copyData(myunitTreeObject->unitFeatureObject->unitFeaturedata,features[0],features[1],features[2],features[3]);
             // cout << features[0] << "\t"<< features[1] << "\t"<< features[2] << "\t"<< features[3] << "\t"<<endl;
-            faceModel->unitTreeObject->allFeatures.append(*faceModel->unitTreeObject->unitFeatureObject);
+            myunitTreeObject->allFeatures.append(*myunitTreeObject->unitFeatureObject);
         }
 
         vector<TldExportEntry> list;
@@ -703,16 +704,17 @@ Tlddatabase::unitFaceModel *TLD::putObjModel()
                 list.push_back(entry);
             }
         }
-        faceModel->unitTreeObject->numLeaves = list.size();
+        myunitTreeObject->numLeaves = list.size();
 
         for(size_t j = 0; j < list.size(); j++)
         {
             TldExportEntry entry = list.at(j);
-            copyData(faceModel->unitTreeObject->unitLeaveObject->unitLeavePositivedata,entry.index,1,entry.P);
-            copyData(faceModel->unitTreeObject->unitLeaveObject->unitLeaveNegativedata,entry.index,0,entry.N);
-            faceModel->unitTreeObject->allLeaves.append(*faceModel->unitTreeObject->unitLeaveObject);
+            copyData(myunitTreeObject->unitLeaveObject->unitLeavePositivedata,entry.index,1,entry.P);
+            copyData(myunitTreeObject->unitLeaveObject->unitLeaveNegativedata,entry.index,0,entry.N);
+            myunitTreeObject->allLeaves.append(*myunitTreeObject->unitLeaveObject);
         }
-        faceModel->allTrees.append(*faceModel->unitTreeObject);
+        faceModel->allTrees.append(*myunitTreeObject);
+        delete myunitTreeObject;
     }
     return faceModel;
 }

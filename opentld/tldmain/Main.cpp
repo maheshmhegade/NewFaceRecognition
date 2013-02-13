@@ -47,7 +47,7 @@ void Main::doWork(IplImage* img,const char* faceModelFileName,int mode,float *re
 
 void Main::printFaceModel()//for verifying object parameters
 {
-    /*    faceModelObject = tld->putObjModel();
+    faceModelObject = tld->putObjModel();
     cout << faceModelObject->objWidth << endl;
     cout << faceModelObject->objHeight << endl;
     cout << faceModelObject->minVar << endl;
@@ -84,5 +84,5 @@ void Main::printFaceModel()//for verifying object parameters
             cout << endl;
         }
     }
-*/
+
 }

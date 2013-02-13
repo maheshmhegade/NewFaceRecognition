@@ -24,11 +24,11 @@ Tlddatabase::Tlddatabase()
 
 Tlddatabase::unitFaceModel::unitFaceModel()
 {
-    unitTreeObject = new unitTree;
+
 }
 Tlddatabase::unitFaceModel::~unitFaceModel()
 {
-    delete unitTreeObject;
+
 }
 Tlddatabase::unitFaceModel::unitTree::unitTree()
 {
@@ -66,5 +66,3 @@ Tlddatabase::~Tlddatabase()
 }
 
 }
-
-
