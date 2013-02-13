@@ -603,37 +603,39 @@ void TLD::readFromFile(const char *path)
 }
 void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
 {
-    /*  EnsembleClassifier *ec = detectorCascade->ensembleClassifier;
+    NNClassifier *nn = detectorCascade->nnClassifier;
+    EnsembleClassifier *ec = detectorCascade->ensembleClassifier;
 
     detectorCascade->objWidth = faceModel->objWidth;
     detectorCascade->objHeight = faceModel->objWidth;
     detectorCascade->varianceFilter->minVar = faceModel->minVar;
     for (int i=0 ;i < faceModel->numPositivePatches ;i++)
     {
-        detectorCascade->nnClassifier->truePositives->push_back(faceModel->allNegativePatches[i]);
+        nn->truePositives->push_back(faceModel->allNegativePatches.at(i));
     }
     for (int i = 0 ; i < faceModel->numNegativePatches ; i++)
     {
-        detectorCascade->nnClassifier->falsePositives->push_back(faceModel->allNegativePatches[i]);
+        detectorCascade->nnClassifier->falsePositives->push_back(faceModel->allNegativePatches.at(i));
     }
-    detectorCascade->numTrees = faceModel->numTrees;
-    detectorCascade->ensembleClassifier->numFeatures = faceModel->numFeatures;
+    ec->numFeatures = faceModel->numFeatures;
+    ec->numTrees = faceModel->numTrees;
     detectorCascade->numFeatures = faceModel->numFeatures;
-    int size = 2 * 2 * detectorCascade->ensembleClassifier->numFeatures * detectorCascade->ensembleClassifier->numTrees;
-    detectorCascade->ensembleClassifier->features = new float[size];
-    detectorCascade->ensembleClassifier->numIndices = pow(2.0f, ec->numFeatures);
-    detectorCascade->ensembleClassifier->initPosteriors();
+    detectorCascade->numTrees = faceModel->numTrees;
+    int size = 2 * 2 * ec->numFeatures * ec->numTrees;
+    ec->features = new float[size];
+    ec->numIndices = pow(2.0f, ec->numFeatures);
+    ec->initPosteriors();
     for (int i=0 ;i < faceModel->numTrees ;i++ )
     {
         for (int j=0 ; j < faceModel->numFeatures ; j++)
         {
-            float *features = detectorCascade->ensembleClassifier->features + 4 * ec->numFeatures * i + 4 * j;
-            features = faceModel->allTrees[i].allFeatures[j].unitFeaturedata;
+            float *features = ec->features + 4 * ec->numFeatures * i + 4 * j;
+            copyData(features,faceModel->allTrees.at(i).allFeatures.at(j).unitFeaturedata);
         }
         for (int j=0 ; j < faceModel->allTrees[i].numLeaves ; j++ )
         {
-            detectorCascade->ensembleClassifier->callupdatePosterior(i,faceModel->allTrees[i].allLeaves[j].unitLeavePositivedata);
-            detectorCascade->ensembleClassifier->callupdatePosterior(i,faceModel->allTrees[i].allLeaves[j].unitLeaveNegativedata);
+            ec->callupdatePosterior(i,(int *)faceModel->allTrees.at(i).allLeaves.at(j).unitLeavePositivedata);
+            ec->callupdatePosterior(i,(int *)faceModel->allTrees.at(i).allLeaves.at(j).unitLeaveNegativedata);
         }
     }
     detectorCascade->initWindowsAndScales();
@@ -643,8 +645,7 @@ void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
 
     detectorCascade->initialised = true;
 
-    detectorCascade->ensembleClassifier->initFeatureOffsets();
-*/
+    ec->initFeatureOffsets();
 }
 Tlddatabase::unitFaceModel *TLD::putObjModel()
 {

@@ -78,6 +78,10 @@ public:
     {
         arrayOne[0] = dataone;arrayOne[1] = datatwo;arrayOne[2] = datathree;
     }
+    void copyData(float *arrayOne,const float *arrayTwo)
+    {
+        arrayOne[0] = arrayTwo[0];arrayOne[1] = arrayTwo[1];arrayOne[2] = arrayTwo[2];arrayOne[3] = arrayTwo[3];
+    }
 };
 
 } /* namespace tld */
