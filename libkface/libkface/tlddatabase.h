@@ -1,6 +1,9 @@
 #include <iostream>
 #include <sqlite3.h>
 #include <QList>
+#include <QBuffer>
+#include <QVariant>
+#include <boost/lexical_cast.hpp>
 #include "../../opentld/libopentld/NormalizedPatch.h"
 
 using namespace std;
@@ -13,15 +16,10 @@ class Tlddatabase
 {
 public:
     Tlddatabase();
-    bool PrevDatabaseExists;
 
     sqlite3 *faceDatabase;
 
-    const char *initialiseDatabase;
-
     sqlite3_stmt *databasePreparingObject;
-
-    ~Tlddatabase();
 
     class unitFaceModel
     {
@@ -33,52 +31,24 @@ public:
 
         float minVar;
 
-        int numPositivePatches;
+        QString serialisedPositivePatches;
+        QString serialisedNegativePatches;
+        QString serialisedFeatures;
+        QString serialisedLeaves;
 
-        int numNegativePatches;
-
-        int numTrees;
-
-        int numFeatures;
-
-        class unitTree
-        {
-        public:
-            unitTree();
-
-            int numFeatures;
-
-            int numLeaves;
-
-            class unitFeature
-            {
-            public:
-                unitFeature();
-                float unitFeaturedata[4];
-                ~unitFeature();
-            };
-            class unitLeave
-            {
-            public:
-                unitLeave();
-                int unitLeavePositivedata[3];
-                int unitLeaveNegativedata[3];
-                ~unitLeave();
-            };
-            unitFeature *unitFeatureObject;
-            unitLeave *unitLeaveObject;
-
-            QList<unitLeave> allLeaves;
-            QList<unitFeature> allFeatures;
-            ~unitTree();
-
-        };
-        QList<NormalizedPatch> allPositivePatches;
-        QList<NormalizedPatch> allNegativePatches;
-        QList<unitTree> allTrees;
+        void serialisePositivePatches(const QList<QList<float> >&);
+        void serialiseNegativePatches(const QList<QList<float> >&);
+        void serialiseFeatures(const QList<QList<QList<float> > >&);
+        void serialiseLeaves(const QList<QList<QList<int> > >&);
+        QList<QList<float> > deserialisePositivePatches();
+        QList<QList<float> >  deserialiseNegativePatches();
+        QList<QList<QList<float> > > deserialiseFeatures();
+        QList<QList<QList<int> > > deserialiseLeaves();
         ~unitFaceModel();
-    };
 
-    QList<unitFaceModel> allFaceModel;
+    };
+    void insertFaceModel(unitFaceModel,string modelName);
+    void deleteFaceModel(const char* modelName);
+    ~Tlddatabase();
 };
 }

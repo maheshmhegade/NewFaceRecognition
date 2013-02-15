@@ -603,6 +603,7 @@ void TLD::readFromFile(const char *path)
 }
 void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
 {
+    /*
     NNClassifier *nn = detectorCascade->nnClassifier;
     EnsembleClassifier *ec = detectorCascade->ensembleClassifier;
 
@@ -646,6 +647,7 @@ void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
     detectorCascade->initialised = true;
 
     ec->initFeatureOffsets();
+    */
 }
 Tlddatabase::unitFaceModel *TLD::putObjModel()
 {
@@ -653,7 +655,7 @@ Tlddatabase::unitFaceModel *TLD::putObjModel()
     EnsembleClassifier *ec = detectorCascade->ensembleClassifier;
 
     Tlddatabase::unitFaceModel *faceModel = new Tlddatabase::unitFaceModel;
-    faceModel->objWidth = detectorCascade->objWidth;
+/*    faceModel->objWidth = detectorCascade->objWidth;
     faceModel->objHeight = detectorCascade->objHeight;
     faceModel->minVar = detectorCascade->varianceFilter->minVar;
 
@@ -717,6 +719,7 @@ Tlddatabase::unitFaceModel *TLD::putObjModel()
         faceModel->allTrees.append(*myunitTreeObject);
         delete myunitTreeObject;
     }
+    */
     return faceModel;
 }
 
