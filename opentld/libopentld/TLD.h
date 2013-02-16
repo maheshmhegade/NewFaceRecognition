@@ -68,8 +68,8 @@ public:
     void processImage(const cv::Mat &img);
     void writeToFile(const char *path);
     void readFromFile(const char *path);
-    void getObjModel(Tlddatabase::unitFaceModel *);
-    Tlddatabase::unitFaceModel * putObjModel();
+    void getObjModel(unitFaceModel *);
+    unitFaceModel *putObjModel();
     void copyData(float *arrayOne,float dataone,float datatwo,float datathree,float datafour)
     {
         arrayOne[0] = dataone;arrayOne[1] = datatwo;arrayOne[2] = datathree;arrayOne[3] = datafour;

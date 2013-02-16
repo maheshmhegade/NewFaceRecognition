@@ -601,7 +601,7 @@ void TLD::readFromFile(const char *path)
     ec->initFeatureOffsets();
 
 }
-void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
+void TLD::getObjModel(unitFaceModel *faceModel)
 {
     NNClassifier *nn = detectorCascade->nnClassifier;
     EnsembleClassifier *ec = detectorCascade->ensembleClassifier;
@@ -666,12 +666,12 @@ void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
     ec->initFeatureOffsets();
 }
 
-Tlddatabase::unitFaceModel *TLD::putObjModel()
+unitFaceModel *TLD::putObjModel()
 {
     NNClassifier *nn = detectorCascade->nnClassifier;
     EnsembleClassifier *ec = detectorCascade->ensembleClassifier;
 
-    Tlddatabase::unitFaceModel *faceModel = new Tlddatabase::unitFaceModel;
+    unitFaceModel *faceModel = new unitFaceModel;
     faceModel->objWidth = detectorCascade->objWidth;
     faceModel->objHeight = detectorCascade->objHeight;
     faceModel->minVar = detectorCascade->varianceFilter->minVar;
@@ -680,7 +680,7 @@ Tlddatabase::unitFaceModel *TLD::putObjModel()
     for(size_t s = 0; s < nn->truePositives->size(); s++)
     {
         QList<float> unitPositivePatch;
-        for (int i = 0; i < sizeof(nn->truePositives->at(s).values)/sizeof(float);i++)
+        for (int i = 0; i < 225;i++)
         {
             unitPositivePatch.append(nn->truePositives->at(s).values[i]);
         }
@@ -691,7 +691,7 @@ Tlddatabase::unitFaceModel *TLD::putObjModel()
     for(size_t s = 0; s < nn->falsePositives->size(); s++)
     {
         QList<float> unitNegativePatch;
-        for (int i = 0; i < sizeof(nn->falsePositives->at(s).values)/sizeof(float);i++)
+        for (int i = 0; i < 225 ;i++)
         {
             unitNegativePatch.append(nn->falsePositives->at(s).values[i]);
         }
@@ -748,6 +748,7 @@ Tlddatabase::unitFaceModel *TLD::putObjModel()
         }
         allLeaves.append(unitLeave);
     }
+    cout << "came here" <<endl;
     faceModel->serialiseFeatures(allFeatures);
     faceModel->serialiseLeaves(allLeaves);
     return faceModel;

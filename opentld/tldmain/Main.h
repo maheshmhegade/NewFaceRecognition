@@ -29,6 +29,7 @@
 
 #include "../libopentld/TLD.h"
 
+using namespace KFaceIface;
 enum Retval
 {
     PROGRAM_EXIT = 0,
@@ -42,7 +43,6 @@ public:
     double threshold;
     int *initialBB;
     int seed;
-    Tlddatabase::unitFaceModel *faceModelObject;
 
     Main()
     {
