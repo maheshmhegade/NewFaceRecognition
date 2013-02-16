@@ -603,40 +603,57 @@ void TLD::readFromFile(const char *path)
 }
 void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
 {
-    /*
     NNClassifier *nn = detectorCascade->nnClassifier;
     EnsembleClassifier *ec = detectorCascade->ensembleClassifier;
 
     detectorCascade->objWidth = faceModel->objWidth;
     detectorCascade->objHeight = faceModel->objWidth;
     detectorCascade->varianceFilter->minVar = faceModel->minVar;
-    for (int i=0 ;i < faceModel->numPositivePatches ;i++)
+    QList<QList<float> > allPositivePatches = faceModel->deserialisePositivePatches();
+    QList<QList<float> > allNegativePatches = faceModel->deserialiseNegativePatches();
+
+    for (int i=0 ;i < allPositivePatches.size() ;i++)
     {
-        nn->truePositives->push_back(faceModel->allNegativePatches.at(i));
+        NormalizedPatch patch;
+        for(int j=0;j < allPositivePatches.at(i).size();j++)
+        {
+            patch.values[j] = allPositivePatches.at(i)[j];
+        }
+        nn->truePositives->push_back(patch);
     }
-    for (int i = 0 ; i < faceModel->numNegativePatches ; i++)
+    for (int i = 0 ; i < allNegativePatches.size() ; i++)
     {
-        detectorCascade->nnClassifier->falsePositives->push_back(faceModel->allNegativePatches.at(i));
+        NormalizedPatch patch;
+        for(int j=0;j < allNegativePatches.at(i).size();j++)
+        {
+            patch.values[j] = allNegativePatches.at(i)[j];
+        }
+        nn->falsePositives->push_back(patch);
     }
-    ec->numFeatures = faceModel->numFeatures;
-    ec->numTrees = faceModel->numTrees;
-    detectorCascade->numFeatures = faceModel->numFeatures;
-    detectorCascade->numTrees = faceModel->numTrees;
+    QList<QList<QList<float> > > allFeatures = faceModel->deserialiseFeatures();
+    QList<QList<QList<int> > > allLeaves = faceModel->deserialiseLeaves();
+    ec->numFeatures = allFeatures.at(0).size();
+    ec->numTrees = allFeatures.size();
+    detectorCascade->numFeatures = ec->numFeatures;
+    detectorCascade->numTrees = ec->numTrees;
     int size = 2 * 2 * ec->numFeatures * ec->numTrees;
     ec->features = new float[size];
     ec->numIndices = pow(2.0f, ec->numFeatures);
     ec->initPosteriors();
-    for (int i=0 ;i < faceModel->numTrees ;i++ )
+    for (int i=0 ;i < allFeatures.size() ;i++ )
     {
-        for (int j=0 ; j < faceModel->numFeatures ; j++)
+        for (int j=0 ; j < allFeatures.at(0).size() ; j++)
         {
             float *features = ec->features + 4 * ec->numFeatures * i + 4 * j;
-            copyData(features,faceModel->allTrees.at(i).allFeatures.at(j).unitFeaturedata);
+            features[0] = allFeatures.at(i).at(j)[0];features[1] = allFeatures.at(i).at(j)[1];features[2] = allFeatures.at(i).at(j)[2];
+            features[3] = allFeatures.at(i).at(j)[3];
         }
-        for (int j=0 ; j < faceModel->allTrees[i].numLeaves ; j++ )
+        for (int j=0 ; j < allLeaves.at(i).size() ; j++ )
         {
-            ec->callupdatePosterior(i,(int *)faceModel->allTrees.at(i).allLeaves.at(j).unitLeavePositivedata);
-            ec->callupdatePosterior(i,(int *)faceModel->allTrees.at(i).allLeaves.at(j).unitLeaveNegativedata);
+            int posarray[3],negarray[3];posarray[0] = allLeaves.at(i).at(j)[0];posarray[1] = 1;posarray[2] = allLeaves.at(i).at(j)[1];
+            negarray[0] = allLeaves.at(i).at(j)[0];negarray[1] = 0;negarray[2] = allLeaves.at(i).at(j)[2];
+            ec->callupdatePosterior(i,posarray);
+            ec->callupdatePosterior(i,negarray);
         }
     }
     detectorCascade->initWindowsAndScales();
@@ -647,50 +664,61 @@ void TLD::getObjModel(Tlddatabase::unitFaceModel *faceModel)
     detectorCascade->initialised = true;
 
     ec->initFeatureOffsets();
-    */
 }
+
 Tlddatabase::unitFaceModel *TLD::putObjModel()
 {
     NNClassifier *nn = detectorCascade->nnClassifier;
     EnsembleClassifier *ec = detectorCascade->ensembleClassifier;
 
     Tlddatabase::unitFaceModel *faceModel = new Tlddatabase::unitFaceModel;
-/*    faceModel->objWidth = detectorCascade->objWidth;
+    faceModel->objWidth = detectorCascade->objWidth;
     faceModel->objHeight = detectorCascade->objHeight;
     faceModel->minVar = detectorCascade->varianceFilter->minVar;
 
-    faceModel->numPositivePatches = nn->truePositives->size();
-
+    QList<QList<float> > allPositivePatches;
     for(size_t s = 0; s < nn->truePositives->size(); s++)
     {
-        NormalizedPatch patch;
-        patch.imageData = nn->truePositives->at(s).values;
-        faceModel->allPositivePatches.append(patch);
+        QList<float> unitPositivePatch;
+        for (int i = 0; i < sizeof(nn->truePositives->at(s).values)/sizeof(float);i++)
+        {
+            unitPositivePatch.append(nn->truePositives->at(s).values[i]);
+        }
+        allPositivePatches.append(unitPositivePatch);
     }
-    faceModel->numNegativePatches = nn->falsePositives->size();
-
+    faceModel->serialisePositivePatches(allPositivePatches);
+    QList<QList<float> > allNegativePatches;
     for(size_t s = 0; s < nn->falsePositives->size(); s++)
     {
-        NormalizedPatch patch;
-        patch.imageData = nn->falsePositives->at(s).values;
-        faceModel->allNegativePatches.append(patch);
+        QList<float> unitNegativePatch;
+        for (int i = 0; i < sizeof(nn->falsePositives->at(s).values)/sizeof(float);i++)
+        {
+            unitNegativePatch.append(nn->falsePositives->at(s).values[i]);
+        }
+        allNegativePatches.append(unitNegativePatch);
     }
+    faceModel->serialiseNegativePatches(allNegativePatches);
 
-    faceModel->numTrees = ec->numTrees;
-    faceModel->numFeatures = ec->numFeatures;
     detectorCascade->numTrees = ec->numTrees;
     detectorCascade->numFeatures = ec->numFeatures;
 
+    QList<QList<QList<float> > > allFeatures;
+    QList<QList<QList<int> > > allLeaves;
+
     for(int i = 0; i < ec->numTrees; i++)
     {
-        Tlddatabase::unitFaceModel::unitTree *myunitTreeObject = new Tlddatabase::unitFaceModel::unitTree;
+        QList<QList<float> > unitFeature;
         for(int j = 0; j < ec->numFeatures; j++)
         {
+            QList<float> subunitFeature;
             float *features = ec->features + 4 * ec->numFeatures * i + 4 * j;
-            copyData(myunitTreeObject->unitFeatureObject->unitFeaturedata,features[0],features[1],features[2],features[3]);
-            // cout << features[0] << "\t"<< features[1] << "\t"<< features[2] << "\t"<< features[3] << "\t"<<endl;
-            myunitTreeObject->allFeatures.append(*myunitTreeObject->unitFeatureObject);
+            for (int i=0;i<4;i++)
+            {
+                subunitFeature.append(features[i]);
+            }// cout << features[0] << "\t"<< features[1] << "\t"<< features[2] << "\t"<< features[3] << "\t"<<endl;
+            unitFeature.append(subunitFeature);
         }
+        allFeatures.append(unitFeature);
 
         vector<TldExportEntry> list;
 
@@ -707,19 +735,21 @@ Tlddatabase::unitFaceModel *TLD::putObjModel()
                 list.push_back(entry);
             }
         }
-        myunitTreeObject->numLeaves = list.size();
 
+        QList<QList<int>  > unitLeave;
         for(size_t j = 0; j < list.size(); j++)
         {
+            QList<int> subunitLeave;
             TldExportEntry entry = list.at(j);
-            copyData(myunitTreeObject->unitLeaveObject->unitLeavePositivedata,entry.index,1,entry.P);
-            copyData(myunitTreeObject->unitLeaveObject->unitLeaveNegativedata,entry.index,0,entry.N);
-            myunitTreeObject->allLeaves.append(*myunitTreeObject->unitLeaveObject);
+            subunitLeave.append(entry.index);
+            subunitLeave.append(entry.P);
+            subunitLeave.append(entry.N);
+            unitLeave.append(subunitLeave);
         }
-        faceModel->allTrees.append(*myunitTreeObject);
-        delete myunitTreeObject;
+        allLeaves.append(unitLeave);
     }
-    */
+    faceModel->serialiseFeatures(allFeatures);
+    faceModel->serialiseLeaves(allLeaves);
     return faceModel;
 }
 
