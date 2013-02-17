@@ -30,7 +30,7 @@ void Main::doWork(IplImage* img,const char* faceModelFileName,int mode,float *re
 
         cvtColor(cv::Mat(img), grey, CV_BGR2GRAY);
         tld->writeToFile(faceModelFileName);
-        //    printFaceModel();
+        //    printFaceModel();            //uncomment this to see new database implementation
     }
 
     else if(mode == 2)//return recognitionconfidence
@@ -47,17 +47,28 @@ void Main::doWork(IplImage* img,const char* faceModelFileName,int mode,float *re
 
 void Main::printFaceModel()//for verifying object parameters
 {
-    KFaceIface::Tlddatabase *dataBase = new Tlddatabase;
+    Tlddatabase *dataBase = new Tlddatabase;
+    dataBase->openFaceDatabase();
+    dataBase->createFaceTable();
+    unitFaceModel *faceModelObject = tld->putObjModel();//dataBase->getFaceModel(0);
+    faceModelObject->Name = "test";
+    //    cout << faceModelObject->Name.toStdString() << endl;
+    //    cout << faceModelObject->objHeight << endl;
+    //    cout << faceModelObject->objWidth << endl;
 
-    KFaceIface::unitFaceModel *faceModelObject = tld->putObjModel();//dataBase->getFaceModel(0);
-    cout << faceModelObject->objHeight << endl;
-    cout << faceModelObject->objWidth << endl;
+    //    cout << faceModelObject->minVar << endl;
 
-    cout << faceModelObject->minVar << endl;
+    //    QList<QList<float> > allPositive = faceModelObject->deserialisePositivePatches();
+    //    for (int i=0;i< allPositive.size();i++)
+    //    {
+    //        for (int j= 0;j< 225;j++)
+    //        {
+    //            cout << allPositive.at(i).at(j) << endl;
+    //        }
+    //    }
 
-    cout << dataBase->getNumFacesInDatabase() << endl;
+    //cout <<  (faceModelObject->serialisedPositivePatches) << "\t" << sizeof(unitFaceModel) << endl;
 
-    string hello = "new man";
-    dataBase->insertFaceModel(faceModelObject,hello);
+    dataBase->insertFaceModel(faceModelObject);
     //delete dataBase;
 }

@@ -3,7 +3,11 @@
 #include <QList>
 #include <QBuffer>
 #include <QVariant>
-#include <boost/lexical_cast.hpp>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QDebug>
+#include <QObject>
+
 #include "../../opentld/libopentld/NormalizedPatch.h"
 
 using namespace std;
@@ -15,6 +19,11 @@ class unitFaceModel
 {
 public:
     unitFaceModel();
+
+    int faceid;
+
+    QString Name;
+
     int objHeight;
 
     int objWidth;
@@ -36,14 +45,18 @@ public:
     QList<QList<QList<int> > > deserialiseLeaves();
     ~unitFaceModel();
 };
+
 class Tlddatabase
 {
 public:
-    Tlddatabase();
-    unitFaceModel *getFaceModel(int Id);
-    int getNumFacesInDatabase();
-    void insertFaceModel(unitFaceModel *,string modelName);
-    void deleteFaceModel(const char* modelName);
-    ~Tlddatabase();
+
+public:
+    bool openFaceDatabase();
+    bool createFaceTable();
+    int insertFaceModel(unitFaceModel*);
+    unitFaceModel *getFaceModel(int id);
+
+private:
+    QSqlDatabase faceDatabase;
 };
 }

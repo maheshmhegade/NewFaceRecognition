@@ -199,7 +199,7 @@ SET(kface_LIB_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/database.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/facedetector.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/recognitiondatabase.cpp
    )
-
+INCLUDE_DIRECTORIES(/usr/lib/qt4)
 KDE4_ADD_LIBRARY(kface SHARED ${kface_LIB_SRCS} ${face_LIB_SRCS})
 
 TARGET_LINK_LIBRARIES(kface ${KDE4_KDECORE_LIBS}
@@ -207,7 +207,7 @@ TARGET_LINK_LIBRARIES(kface ${KDE4_KDECORE_LIBS}
                             ${QT_QTGUI_LIBRARY}
                             ${LIBFACE_LIBRARIES}
                             ${OpenCV_LIBRARIES}
-                            tldmain sqlite3)
+                            tldmain sqlite3 QtSql)
 SET_TARGET_PROPERTIES(kface PROPERTIES VERSION ${KFACE_LIB_SO_VERSION_STRING}
                             SOVERSION ${KFACE_LIB_SO_CUR_VERSION})
 

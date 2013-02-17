@@ -3,15 +3,11 @@
 namespace KFaceIface
 
 {
-Tlddatabase::Tlddatabase()
-{
-
-}
-
 unitFaceModel::unitFaceModel()
 {
 
 }
+
 void unitFaceModel::serialisePositivePatches(const QList<QList<float> >& allPositivePatches)
 {
     QByteArray byteArray;
@@ -67,15 +63,13 @@ void unitFaceModel::serialiseLeaves(const QList<QList<QList<int> > >& allLeaves)
 
 QList<QList<float> > unitFaceModel::deserialisePositivePatches()
 {
-    QByteArray readArr = QByteArray::fromBase64( serialisedPositivePatches.toAscii());
+    QByteArray readArr = QByteArray::fromBase64( this->serialisedPositivePatches.toAscii());
     QBuffer readBuffer(&readArr);
     readBuffer.open(QIODevice::ReadOnly);
     QDataStream in(&readBuffer);
-
     QList<QList<float> > allPositivePatches;
 
     in >> allPositivePatches;
-
     return allPositivePatches;
 }
 
@@ -122,64 +116,76 @@ QList<QList<QList<int> > > unitFaceModel::deserialiseLeaves()
 
     return allLeaves;
 }
-int Tlddatabase::getNumFacesInDatabase()
+bool Tlddatabase::createFaceTable()
 {
-    sqlite3 *faceDatabase;
-
-    sqlite3_stmt *databasePreparingObject;
-    sqlite3_open("faceDatabase.db",&faceDatabase); //open database
-    return (int)sqlite3_last_insert_rowid(faceDatabase);
-}
-unitFaceModel *Tlddatabase::getFaceModel(int ID)
-{
-    sqlite3 *faceDatabase;
-    sqlite3_open("faceDatabase.db",&faceDatabase); //open database
-    sqlite3_stmt *databasePreparingObject;
-    unitFaceModel *faceModel;// = new unitFaceModel;
-    const char *getSql = "select * from allFaces";
-    sqlite3_prepare_v2(faceDatabase, getSql, -1, &databasePreparingObject, NULL);
-    sqlite3_step(databasePreparingObject);
-    faceModel = (unitFaceModel *) sqlite3_column_blob(databasePreparingObject,1);
-    return faceModel;
-}
-void Tlddatabase::insertFaceModel(unitFaceModel *serialisedFaceModel,string modelName)
-{
-    sqlite3 *faceDatabase;
-
-    sqlite3_stmt *databasePreparingObject;
-    sqlite3_open("faceDatabase.db",&faceDatabase); //open database
-
-    string insertSqlOne = "INSERT INTO allFaces(ID,MODELDATA) VALUES('1'";
-    string insertSqlTwo = ",?)";
-    string insertSql = insertSqlOne+insertSqlTwo;
-    cout << insertSql << endl;
-    //if (sqlite3_prepare_v2(faceDatabase,(const char*)insertSql.c_str() ,-1, &databasePreparingObject, NULL) != SQLITE_OK)
-    //{
-    //  cout << "inside database" << endl;
-    const char *initialiseDatabase = "CREATE TABLE allFaces(ID INTEGER,MODELDATA BLOB)";
-    sqlite3_prepare_v2(faceDatabase,initialiseDatabase ,-1, &databasePreparingObject, NULL);
-    sqlite3_step(databasePreparingObject);
-    sqlite3_prepare_v2(faceDatabase,(const char*)insertSql.c_str() ,-1, &databasePreparingObject, NULL);
-    /*}
-    else
+    bool ret = false;
+    if (faceDatabase.isOpen())
     {
-        cout << "i am" << endl;
-    }*/
-    sqlite3_bind_blob(databasePreparingObject, 1, serialisedFaceModel, sizeof(serialisedFaceModel), SQLITE_TRANSIENT);
-    sqlite3_step(databasePreparingObject);
-    sqlite3_finalize(databasePreparingObject);
-    sqlite3_exec(faceDatabase, "COMMIT", NULL, NULL, NULL);
-    sqlite3_close(faceDatabase);
+        QSqlQuery query;
+        ret = query.exec("create table faceDatabase "
+                         "(id integer primary key, "
+                         "modelname varchar, "
+                         "modelheight integer, "
+                         "modelwidth integer, "
+                         "modelminvar float, "
+                         "positivepatches varchar, "
+                         "negativepatches varchar, "
+                         "allfeatures varchar, "
+                         "allleaves varchar)");
+
+    }
+    return ret;
 }
 
-void Tlddatabase::deleteFaceModel(const char* modelName)
+bool Tlddatabase::openFaceDatabase()
 {
+    faceDatabase = QSqlDatabase::addDatabase("QSQLITE");
 
+    faceDatabase.setDatabaseName("faceDatabase.db");
+
+    return faceDatabase.open();
 }
 
-Tlddatabase::~Tlddatabase()
+int Tlddatabase::insertFaceModel(unitFaceModel *facemodel)
 {
+    int newId = -1;
+    bool ret = false;
+    if (faceDatabase.isOpen())
+    {
+        QSqlQuery query;
+        cout << "ghere" << endl;
+        ret = query.exec(QString("insert into faceDatabase values(NULL,'%1',%2,%3,%4,'%5','%6','%7','%8')")
+                         .arg(facemodel->Name).arg(facemodel->objHeight).arg(facemodel->objWidth).arg(facemodel->minVar)
+                         .arg(facemodel->serialisedPositivePatches).arg(facemodel->serialisedNegativePatches)
+                         .arg(facemodel->serialisedFeatures).arg(facemodel->serialisedLeaves));
+        cout << "ia am" << endl;
+        // Get database given autoincrement value
+        if (ret)
+        {
+            newId = query.lastInsertId().toInt();
+        }
 
+    }
+    qDebug()<< newId;
+    return newId;
 }
 
+unitFaceModel *Tlddatabase::getFaceModel(int faceid)
+{
+    unitFaceModel *facemodel = new unitFaceModel;
+    QSqlQuery query(QString("select * from faceDatabase"));
+    if (query.next())
+    {
+        facemodel->faceid = query.value(0).toInt();
+        facemodel->Name = query.value(1).toString();
+        facemodel->objHeight = query.value(2).toInt();
+        facemodel->objWidth = query.value(3).toInt();
+        facemodel->minVar = query.value(4).toFloat();
+        facemodel->serialisedPositivePatches = query.value(5).toString();
+        facemodel->serialisedNegativePatches = query.value(6).toString();
+        facemodel->serialisedFeatures = query.value(7).toString() ;
+        facemodel->serialisedLeaves = query.value(8).toString();
+    }
+    return facemodel;
+}
 }
