@@ -218,7 +218,7 @@ QList<double> RecognitionDatabase::recognizeFaces(QList<Face>& faces)
 
     QMutexLocker lock(&d->mutex);
     QImage dummyImage;
-    return d->database()->recognizeFaces(faces,dummyImage);
+    d->database()->recognizeFaces(faces,dummyImage);
 }
 
 void RecognitionDatabase::saveConfig()

@@ -4,13 +4,14 @@
 #include "../libopentld/TLDUtil.h"
 #include <fstream>
 #include <iostream>
+#include <opencv/highgui.h>
 using namespace std;
 using namespace tld;
 using namespace cv;
 
 unitFaceModel* Main::generateModel(IplImage* faceImage)
 {
-    unitFaceModel *generatedmodel = new unitFaceModel;
+    unitFaceModel *generatedmodel;
     Mat grey(faceImage->height, faceImage->width, CV_8UC1);
     cvtColor(cv::Mat(faceImage), grey,CV_BGR2GRAY);// CV_BGR2GRAY);
 

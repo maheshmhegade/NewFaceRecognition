@@ -266,17 +266,17 @@ void MainWindow::clearScene()
 
 void MainWindow::recognise()
 {
-    printf("1\n");
-    QList<double> closeness = d->database->recognizeFaces(d->currentFaces,d->currentPhoto);
 
-    if(closeness.isEmpty())
-        return;
+d->database->recognizeFaces(d->currentFaces,d->currentPhoto);
+
+//    if(closeness.isEmpty())
+//        return;
 
     for(int i = 0; i < d->currentFaces.size(); ++i)
     {
         d->faceitems[i]->suggest(d->currentFaces[i].name());
-        kDebug() << "Face #"<< i+1 << " is closest to the person with ID " << d->currentFaces[i].id()
-                 << " and name "<< d->currentFaces[i].name()
-                 << " with a distance of "<< closeness[i];
+//        kDebug() << "Face #"<< i+1 << " is closest to the person with ID " << d->currentFaces[i].id()
+//                 << " and name "<< d->currentFaces[i].name()
+//                 << " with a distance of "<< closeness[i];
     }
 }

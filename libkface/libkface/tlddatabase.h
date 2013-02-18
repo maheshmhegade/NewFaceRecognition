@@ -25,6 +25,7 @@ public:
     int  queryNumfacesinDatabase();
     QString querybyFaceid(int faceid);
     void insertFaceModel(unitFaceModel*);
+    void configureMain();
     IplImage* QImage2IplImage(const QImage& qimg) const;
     unitFaceModel *getFaceModel(int faceid);
     ~Tlddatabase();

@@ -218,8 +218,8 @@ bool Database::updateFaces(QList<Face>& faces, const QImage& ImageToTld) const
     Tlddatabase *tlddatabase = new Tlddatabase();
     foreach(Face face, faces)
     {
+        tlddatabase->configureMain();
         int faceid;
-        cout << "one" << endl;
         if (false)//(faceid = this->querybyName(face.name())))//TODO:train/update existing facemodel or create newmodel  based on recognition accuracy
         {
             unitFaceModel *facemodeltostore = new unitFaceModel;
@@ -230,181 +230,51 @@ bool Database::updateFaces(QList<Face>& faces, const QImage& ImageToTld) const
         }
         else if(face.name() != NULL)//store the new face for first time
         {
-            cout << "two" << endl;
-            unitFaceModel *facemodeltostore = new unitFaceModel;
+            unitFaceModel *facemodeltostore;
             QImage facetotld = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
                                                face.toFace().getWidth(),face.toFace().getHeight());
             facemodeltostore = tlddatabase->main->generateModel(tlddatabase->QImage2IplImage(facetotld));
-            cout << facemodeltostore->objHeight << endl;
-            cout << facemodeltostore->objWidth << endl;
-            cout << facemodeltostore->minVar << endl;
+            facemodeltostore->Name = face.name();
             tlddatabase->insertFaceModel(facemodeltostore);
         }
     }
-/*
-    if(faces.isEmpty())
-        return false;
-
-    std::vector<libface::Face> faceVec;
-
+}
+void Database::recognizeFaces(QList<Face>& faces, const QImage& imageToTld) const
+{
+    Tlddatabase *tlddatabase = new Tlddatabase();
     foreach(Face face, faces)
     {
-        // If a name is already there in the dictionary, then set the ID from the dictionary, so that libface won't set it's own ID
-        if(d->hash.contains(face.name()))
-        {
-            face.setId(d->hash[face.name()]);
-            //cout << face.toFace().getX1() << endl;
-        }
-        else if(face.name() != NULL)
-        {
-            QImage faceToTld               = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
-                                                             face.toFace().getWidth(),face.toFace().getHeight());
-            libface::Tldface* const tmpTLD = new libface::Tldface;
-            tmpTLD->writeModelTofile((tmpTLD->QImage2IplImage(faceToTld)),(face.name().toStdString().c_str()));
-            delete tmpTLD;
-        }
-
-        faceVec.push_back(face.toFace(Face::ShallowCopy));
-    }
-
-    std::vector<int> ids;
-
-    try
-    {
-        ids = d->libface->update(&faceVec);
-    }
-    catch (cv::Exception& e)
-    {
-        kError() << "cv::Exception:" << e.what();
-    }
-    catch(...)
-    {
-        kDebug() << "cv::Exception";
-    }
-
-    for(int i = 0; i<(int)ids.size(); ++i)
-    {
-        faces[i].setId(ids.at(i));
-
-        // If the name was not in the mapping before (new name), add it to the dictionary
-        if(!d->hash.contains(faces[i].name()))
-        {
-            // Add to file
-            KFaceUtils::addNameToFile(d->configPath + d->mappingFilename, faces[i].name(), faces[i].id());
-            // Add to d->hash
-            d->hash[faces[i].name()] = faces[i].id();
-        }
-    }
-
-    d->configDirty = true;
-
-    return true;
-*/
-}
-
-QList<double> Database::recognizeFaces(QList<Face>& faces, const QImage& imageToTld) const
-{
-
-/*
-    QList<double> closeness;
-
-    if(faces.isEmpty() || !d->libface->count())
-    {
-        return closeness;
-    }
-
-    std::vector<libface::Face> faceVec;
-
-    foreach(const Face& face, faces)
-    {
-        faceVec.push_back(face.toFace(Face::ShallowCopy));
-    }
-
-    std::vector< std::pair<int, double> > result;
-
-    try
-    {
-        result = d->libface->recognise(&faceVec);
-    }
-    catch (cv::Exception& e)
-    {
-        kError() << "cv::Exception:" << e.what();
-    }
-    catch(...)
-    {
-        kDebug() << "cv::Exception";
-    }
-
-    for(int i = 0; i <faces.size() && i<(int)result.size(); ++i)
-    {
-        faces[i].setId(result.at(i).first);
-        closeness.append(result.at(i).second);
-
-/*
-        // Locate the name from the hash, pity we don't have a bi-directional hash in Qt
-
-        QHashIterator<QString, int> it(d->hash);
-        it.toFront();
-
-        while(it.hasNext())
-        {
-            it.next();
-            cout << it.key().toStdString() << endl;
-
-            if(it.value() == faces[i].id())
-            {
-                faces[i].setName(it.key());
-                break;
-            }
-        }
-
-        vector< string> namesInDatabase;
-        vector<float> recognitionConfidence;
-
-        QHashIterator<QString, int> itp(d->hash);
+        vector<float> recognitionconfidence;
+        QImage facetotld = imageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
+                                           face.toFace().getWidth(),face.toFace().getHeight());
+        IplImage *tmpfacetotld = tlddatabase->QImage2IplImage(facetotld);
         int count = -1;
-
-        while(itp.hasNext())
+        for (int i=1 ;i < 3 ; i++ )//find recognition confidence with all facemodel in database
         {
-           itp.next();
-
-           QImage faceToTld = imageToTld.copy(faces[i].toFace().getX1(),    faces[i].toFace().getY1(),
-                                              faces[i].toFace().getWidth(), faces[i].toFace().getHeight());
-           if(itp.key() != NULL)
-           {
-                count ++;
-                libface::Tldface* const tmpTLD = new libface::Tldface;
-                cout << "failed" << endl;
-                recognitionConfidence.push_back((tmpTLD->getRecognitionConfidence((tmpTLD->QImage2IplImage(faceToTld)),(itp.key().toStdString().c_str()))));
-                namesInDatabase.push_back(itp.key().toStdString());
-
-                delete tmpTLD;
-            }
+            tlddatabase->configureMain();
+            unitFaceModel *comparefacemodel = tlddatabase->getFaceModel(i);
+            recognitionconfidence.push_back(tlddatabase->main->getRecognitionConfidence(comparefacemodel,tlddatabase->QImage2IplImage(facetotld)));
+            count ++;
         }
-
-        if(count != -1)
+        if(count != -1)//find maximum confidence index and set corresponding string
         {
             int maxConfIndex    = 0;
-            float maxConfidence = recognitionConfidence[0];
+            float maxConfidence = recognitionconfidence[0];
 
             for(int tmpInt = 0; tmpInt <= count ; tmpInt++ )
             {
-                if(recognitionConfidence[tmpInt] > maxConfidence)
+                if(recognitionconfidence[tmpInt] > maxConfidence)
                 {
                     maxConfIndex  = tmpInt;
-                    maxConfidence = recognitionConfidence[tmpInt];
+                    maxConfidence = recognitionconfidence[tmpInt];
                 }
             }
-
-            cout << "executed " << endl;
-
             if(maxConfidence > 0.6 )
-                faces[i].setName(QString::fromStdString(namesInDatabase[maxConfIndex]));
+            {
+                face.setName(tlddatabase->querybyFaceid(maxConfIndex));
+            }
         }
     }
-
-    return closeness;
-*/
 }
 
 void Database::clearTraining(const QString& name)

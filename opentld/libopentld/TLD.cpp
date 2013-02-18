@@ -748,7 +748,6 @@ unitFaceModel *TLD::putObjModel()
         }
         allLeaves.append(unitLeave);
     }
-    cout << "came here" <<endl;
     faceModel->serialiseFeatures(allFeatures);
     faceModel->serialiseLeaves(allLeaves);
     return faceModel;
