@@ -161,10 +161,8 @@ IF (NOT LIBFACE_FOUND)
                       ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libface/FaceDetect.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libface/Face.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libface/Eigenfaces.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libface/Tldfaces.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libface/LibFace.cpp
                       ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libface/Haarcascades.cpp
-                      ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libface/Tldfaces.cpp
        )
 
     SET(LIBFACE_LIBRARIES "")
@@ -193,6 +191,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/version.h.cmake ${CMAKE_CURRENT_BINAR
 
 SET(kface_LIB_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/database.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/tlddatabase.cpp
+                   ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/Tldfaces.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/face.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/kfaceutils.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/image.cpp

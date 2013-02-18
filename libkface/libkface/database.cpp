@@ -52,6 +52,7 @@
 #include "image_p.h"
 
 using namespace std;
+using namespace libface;
 
 namespace KFaceIface
 {
@@ -214,6 +215,33 @@ QList<Face> Database::detectFaces(const Image& image) const
 
 bool Database::updateFaces(QList<Face>& faces, const QImage& ImageToTld) const
 {
+    Tlddatabase *tlddatabase = new Tlddatabase();
+    foreach(Face face, faces)
+    {
+        int faceid;
+        cout << "one" << endl;
+        if (false)//(faceid = this->querybyName(face.name())))//TODO:train/update existing facemodel or create newmodel  based on recognition accuracy
+        {
+            unitFaceModel *facemodeltostore = new unitFaceModel;
+            unitFaceModel *existinmodel = tlddatabase->getFaceModel(faceid);
+            QImage facetotld = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
+                                               face.toFace().getWidth(),face.toFace().getHeight());
+            tlddatabase->main->learnandUpdate(facemodeltostore,existinmodel,tlddatabase->QImage2IplImage(facetotld));
+        }
+        else if(face.name() != NULL)//store the new face for first time
+        {
+            cout << "two" << endl;
+            unitFaceModel *facemodeltostore = new unitFaceModel;
+            QImage facetotld = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
+                                               face.toFace().getWidth(),face.toFace().getHeight());
+            facemodeltostore = tlddatabase->main->generateModel(tlddatabase->QImage2IplImage(facetotld));
+            cout << facemodeltostore->objHeight << endl;
+            cout << facemodeltostore->objWidth << endl;
+            cout << facemodeltostore->minVar << endl;
+            tlddatabase->insertFaceModel(facemodeltostore);
+        }
+    }
+/*
     if(faces.isEmpty())
         return false;
 
@@ -271,10 +299,13 @@ bool Database::updateFaces(QList<Face>& faces, const QImage& ImageToTld) const
     d->configDirty = true;
 
     return true;
+*/
 }
 
 QList<double> Database::recognizeFaces(QList<Face>& faces, const QImage& imageToTld) const
 {
+
+/*
     QList<double> closeness;
 
     if(faces.isEmpty() || !d->libface->count())
@@ -326,7 +357,7 @@ QList<double> Database::recognizeFaces(QList<Face>& faces, const QImage& imageTo
                 break;
             }
         }
-*/
+
         vector< string> namesInDatabase;
         vector<float> recognitionConfidence;
 
@@ -373,6 +404,7 @@ QList<double> Database::recognizeFaces(QList<Face>& faces, const QImage& imageTo
     }
 
     return closeness;
+*/
 }
 
 void Database::clearTraining(const QString& name)

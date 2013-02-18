@@ -44,7 +44,7 @@
 #include "libkface_export.h"
 #include "face.h"
 #include "image.h"
-#include "../libface/Tldfaces.h"
+#include "tlddatabase.h"
 
 namespace KFaceIface
 {

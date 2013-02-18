@@ -30,40 +30,42 @@
  *
  * ============================================================ */
 
-// Qt includes
+#include <iostream>
+#include <QList>
+#include <QBuffer>
+#include <QVariant>
 
-#include <QImage>
 
-// OpenTLD includes
-
-#include "../../opentld/tldmain/Config.h"
-#include "../../opentld/tldmain/Main.h"
-//#include "../libkface/tlddatabase.h"
-
-using namespace tld;
-using           tld::Config;
-using           tld::Settings;
-using namespace KFaceIface;
-
-namespace libface
+namespace KFaceIface
 {
-
-class Tldface
+class unitFaceModel
 {
 public:
+    unitFaceModel();
 
-    Tldface();
-   ~Tldface();
+    int faceid;
 
-    int       writeModelTofile(IplImage* const, const char* const)         const;
-    int       updateDatabase(IplImage* const, const char* const)           const;
-    float     getRecognitionConfidence(IplImage* const, const char* const) const;
-    IplImage* QImage2IplImage(const QImage&)                               const;
+    QString Name;
 
-private:
+    int objHeight;
 
-    class Private;
-    Private* const d;
+    int objWidth;
+
+    float minVar;
+
+    QString serialisedPositivePatches;
+    QString serialisedNegativePatches;
+    QString serialisedFeatures;
+    QString serialisedLeaves;
+
+    void serialisePositivePatches(const QList<QList<float> >&);
+    void serialiseNegativePatches(const QList<QList<float> >&);
+    void serialiseFeatures(const QList<QList<QList<float> > >&);
+    void serialiseLeaves(const QList<QList<QList<int> > >&);
+    QList<QList<float> > deserialisePositivePatches();
+    QList<QList<float> >  deserialiseNegativePatches();
+    QList<QList<QList<float> > > deserialiseFeatures();
+    QList<QList<QList<int> > > deserialiseLeaves();
+    ~unitFaceModel();
 };
-
 } // namespace libface

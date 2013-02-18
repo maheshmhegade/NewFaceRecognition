@@ -57,8 +57,10 @@ public:
         delete tld;
     }
 
-    void doWork(IplImage* , const char*, int mode, float *recognitionCaonfidence);
-    void printFaceModel();
+    unitFaceModel * generateModel( IplImage* );
+    float getRecognitionConfidence(unitFaceModel*,IplImage*);
+    bool learnandUpdate(unitFaceModel *unifacemodel,unitFaceModel *existingmodel,IplImage* faceimage);
 };
+
 
 #endif /* MAIN_H_ */

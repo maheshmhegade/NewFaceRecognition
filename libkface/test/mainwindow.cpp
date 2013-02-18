@@ -60,7 +60,6 @@
 
 #include "faceitem.h"
 
-using namespace tld;
 using namespace std;
 using namespace KFaceIface;
 

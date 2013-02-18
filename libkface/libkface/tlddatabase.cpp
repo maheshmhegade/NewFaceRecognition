@@ -3,150 +3,69 @@
 namespace KFaceIface
 
 {
-unitFaceModel::unitFaceModel()
+Tlddatabase::Tlddatabase()
 {
-
+    main        = new Main();
+    config.configure(main);
+    srand(main->seed);
+    this->openFaceDatabase();
+    this->createFaceTable();
 }
-
-void unitFaceModel::serialisePositivePatches(const QList<QList<float> >& allPositivePatches)
-{
-    QByteArray byteArray;
-    QBuffer writeBuffer(&byteArray);
-    writeBuffer.open(QIODevice::WriteOnly);
-    QDataStream out(&writeBuffer);
-
-    out << allPositivePatches;
-
-    writeBuffer.close();
-
-    serialisedPositivePatches = QString(byteArray.toBase64());
-}
-void unitFaceModel::serialiseNegativePatches(const QList<QList<float> >& allNegativePatches)
-{
-    QByteArray byteArray;
-    QBuffer writeBuffer(&byteArray);
-    writeBuffer.open(QIODevice::WriteOnly);
-    QDataStream out(&writeBuffer);
-
-    out << allNegativePatches;
-
-    writeBuffer.close();
-
-    serialisedNegativePatches = QString(byteArray.toBase64());
-}
-void unitFaceModel::serialiseFeatures(const QList<QList<QList<float> > >& allFeatures)
-{
-    QByteArray byteArray;
-    QBuffer writeBuffer(&byteArray);
-    writeBuffer.open(QIODevice::WriteOnly);
-    QDataStream out(&writeBuffer);
-
-    out << allFeatures;
-
-    writeBuffer.close();
-
-    serialisedFeatures = QString(byteArray.toBase64());
-}
-void unitFaceModel::serialiseLeaves(const QList<QList<QList<int> > >& allLeaves)
-{
-    QByteArray byteArray;
-    QBuffer writeBuffer(&byteArray);
-    writeBuffer.open(QIODevice::WriteOnly);
-    QDataStream out(&writeBuffer);
-
-    out << allLeaves;
-
-    writeBuffer.close();
-
-    serialisedLeaves = QString(byteArray.toBase64());
-}
-
-QList<QList<float> > unitFaceModel::deserialisePositivePatches()
-{
-    QByteArray readArr = QByteArray::fromBase64( this->serialisedPositivePatches.toAscii());
-    QBuffer readBuffer(&readArr);
-    readBuffer.open(QIODevice::ReadOnly);
-    QDataStream in(&readBuffer);
-    QList<QList<float> > allPositivePatches;
-
-    in >> allPositivePatches;
-    return allPositivePatches;
-}
-
-QList<QList<float> > unitFaceModel::deserialiseNegativePatches()
-{
-    QByteArray readArr = QByteArray::fromBase64( serialisedNegativePatches.toAscii());
-    QBuffer readBuffer(&readArr);
-    readBuffer.open(QIODevice::ReadOnly);
-    QDataStream in(&readBuffer);
-
-    QList<QList<float> > allNegativePatches;
-
-    in >> allNegativePatches;
-
-    return allNegativePatches;
-}
-QList<QList<QList<float> > > unitFaceModel::deserialiseFeatures()
-{
-    QByteArray readArr = QByteArray::fromBase64( serialisedFeatures.toAscii());
-    QBuffer readBuffer(&readArr);
-    readBuffer.open(QIODevice::ReadOnly);
-    QDataStream in(&readBuffer);
-
-    QList<QList<QList<float> > > allFeatures;
-
-    in >> allFeatures;
-
-    return allFeatures;
-}
-unitFaceModel::~unitFaceModel()
-{
-
-}
-QList<QList<QList<int> > > unitFaceModel::deserialiseLeaves()
-{
-    QByteArray readArr = QByteArray::fromBase64( serialisedLeaves.toAscii());
-    QBuffer readBuffer(&readArr);
-    readBuffer.open(QIODevice::ReadOnly);
-    QDataStream in(&readBuffer);
-
-    QList<QList<QList<int> > > allLeaves;
-
-    in >> allLeaves;
-
-    return allLeaves;
-}
-bool Tlddatabase::createFaceTable()
-{
-    bool ret = false;
-    if (faceDatabase.isOpen())
-    {
-        QSqlQuery query;
-        ret = query.exec("create table faceDatabase "
-                         "(id integer primary key, "
-                         "modelname varchar, "
-                         "modelheight integer, "
-                         "modelwidth integer, "
-                         "modelminvar float, "
-                         "positivepatches varchar, "
-                         "negativepatches varchar, "
-                         "allfeatures varchar, "
-                         "allleaves varchar)");
-
-    }
-    return ret;
-}
-
-bool Tlddatabase::openFaceDatabase()
+void Tlddatabase::openFaceDatabase()
 {
     faceDatabase = QSqlDatabase::addDatabase("QSQLITE");
 
     faceDatabase.setDatabaseName("faceDatabase.db");
 
-    return faceDatabase.open();
+    faceDatabase.open();
 }
 
-int Tlddatabase::insertFaceModel(unitFaceModel *facemodel)
+Tlddatabase::~Tlddatabase()
+{
+
+}
+void Tlddatabase::createFaceTable()
+{
+    if (faceDatabase.isOpen())
+    {
+        QSqlQuery query;
+        query.exec("create table faceDatabase "
+                   "(id integer primary key, "
+                   "modelname varchar, "
+                   "modelheight integer, "
+                   "modelwidth integer, "
+                   "modelminvar float, "
+                   "positivepatches varchar, "
+                   "negativepatches varchar, "
+                   "allfeatures varchar, "
+                   "allleaves varchar)");
+
+    }
+}
+int  Tlddatabase::queryNumfacesinDatabase()
+{
+    QSqlQuery query(QString("select * from faceDatabase "));
+    return query.size();
+}
+QString Tlddatabase::querybyFaceid(int faceid)
+{
+    QSqlQuery query(QString("select * from faceDatabase where id = %1").arg(faceid));
+    if (query.next())
+    {
+        return query.value(2).toString();
+    }
+}
+
+int Tlddatabase::querybyName(QString nametoquery)
+{
+    QSqlQuery query(QString("select * from faceDatabase where modelname = %1").arg(nametoquery));
+    if (query.next())
+    {
+        return query.value(1).toInt();
+    }
+}
+
+void Tlddatabase::insertFaceModel(unitFaceModel *facemodel)
 {
     int newId = -1;
     bool ret = false;
@@ -167,8 +86,73 @@ int Tlddatabase::insertFaceModel(unitFaceModel *facemodel)
 
     }
     qDebug()<< newId;
-    return newId;
 }
+
+/*void Tlddatabase::updateFaceDatabase(QList<Face>& faces, const QImage& ImageToTld)
+{
+    foreach(Face face, faces)
+    {
+        int faceid;
+        cout << "one" << endl;
+        if ((faceid = this->querybyName(face.name())))//TODO:train/update existing facemodel or create newmodel  based on recognition accuracy
+        {
+            unitFaceModel *facemodeltostore = new unitFaceModel;
+            unitFaceModel *existinmodel = this->getFaceModel(faceid);
+            QImage facetotld = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
+                                               face.toFace().getWidth(),face.toFace().getHeight());
+            this->d->main->learnandUpdate(facemodeltostore,existinmodel,this->QImage2IplImage(facetotld));
+        }
+        else if(face.name() != NULL)//store the new face for first time
+        {
+            cout << "two" << endl;
+            unitFaceModel *facemodeltostore = new unitFaceModel;
+            QImage facetotld = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
+                                               face.toFace().getWidth(),face.toFace().getHeight());
+            this->d->main->generateModel(facemodeltostore,this->QImage2IplImage(facetotld));
+            cout << facemodeltostore->objHeight << endl;
+            cout << facemodeltostore->objWidth << endl;
+            cout << facemodeltostore->minVar << endl;
+            this->insertFaceModel(facemodeltostore);
+        }
+    }
+}
+void Tlddatabase::recogniseFace(QList<Face>& faces, const QImage& ImageToTld)
+{
+    foreach(Face face, faces)
+    {
+        vector<float> recognitionconfidence;
+        QImage facetotld = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
+                                           face.toFace().getWidth(),face.toFace().getHeight());
+        IplImage *tmpfacetotld = this->QImage2IplImage(facetotld);
+        int count = -1;
+        for (int i=0 ;i < this->queryNumfacesinDatabase() ; i++ )//find recognition confidence with all facemodel in database
+        {
+            unitFaceModel *comparefacemodel = this->getFaceModel(i);
+            recognitionconfidence.push_back(this->d->main->getRecognitionConfidence(comparefacemodel,tmpfacetotld));
+            count ++;
+        }
+        if(count != -1)//find maximum confidence index and set corresponding string
+        {
+            int maxConfIndex    = 0;
+            float maxConfidence = recognitionconfidence[0];
+
+            for(int tmpInt = 0; tmpInt <= count ; tmpInt++ )
+            {
+                if(recognitionconfidence[tmpInt] > maxConfidence)
+                {
+                    maxConfIndex  = tmpInt;
+                    maxConfidence = recognitionconfidence[tmpInt];
+                }
+            }
+            if(maxConfidence > 0.6 )
+            {
+                face.setName(this->querybyFaceid(maxConfIndex));
+            }
+            cout << "executed " << endl;
+        }
+    }
+}
+*/
 
 unitFaceModel *Tlddatabase::getFaceModel(int faceid)
 {
@@ -187,5 +171,17 @@ unitFaceModel *Tlddatabase::getFaceModel(int faceid)
         facemodel->serialisedLeaves = query.value(8).toString();
     }
     return facemodel;
+}
+IplImage* Tlddatabase::QImage2IplImage(const QImage& qimg) const
+{
+
+    IplImage* const imgHeader = cvCreateImageHeader(cvSize(qimg.width(), qimg.height()), IPL_DEPTH_8U, 4);
+    imgHeader->imageData      = (char*) qimg.bits();
+
+    uchar* const newdata      = (uchar*) malloc(sizeof(uchar) * qimg.byteCount());
+    memcpy(newdata, qimg.bits(), qimg.byteCount());
+    imgHeader->imageData      = (char*) newdata;
+
+    return imgHeader;
 }
 }

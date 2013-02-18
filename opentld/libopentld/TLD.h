@@ -31,7 +31,7 @@
 
 #include "MedianFlowTracker.h"
 #include "DetectorCascade.h"
-#include "../../libkface/libkface/tlddatabase.h"
+#include "../../libkface/libkface/Tldfaces.h"
 using namespace KFaceIface;
 
 namespace tld
