@@ -101,7 +101,7 @@ public:
      * @return A QList of "closeness" of recognized faces, in the same order as the argument;
      * or an empty list, if an error occurred or no recognition data is available.
      */
-    QList<double> recognizeFaces(QList<Face>& faces);
+    bool recognizeFaces(QList<Face>& faces);
 
     /**
      * Clear the training database for a single name or id.

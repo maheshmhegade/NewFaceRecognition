@@ -29,7 +29,6 @@
 
 #include "../libopentld/TLD.h"
 
-using namespace KFaceIface;
 enum Retval
 {
     PROGRAM_EXIT = 0,
@@ -57,10 +56,9 @@ public:
         delete tld;
     }
 
-    unitFaceModel * generateModel( IplImage* );
-    float getRecognitionConfidence(unitFaceModel*,IplImage*);
-    bool learnandUpdate(unitFaceModel *unifacemodel,unitFaceModel *existingmodel,IplImage* faceimage);
+    unitFaceModel *generatefacemodel(IplImage* );
+    float getrecognitionconfidence(IplImage* , unitFaceModel *comparemodel);
+    void printFaceModel();
 };
-
 
 #endif /* MAIN_H_ */

@@ -130,7 +130,7 @@ public:
      * @return A QList of "closeness" of recognized faces, in the same order as the argument;
      * or an empty list, if an error occurred or no recognition data is available.
      */
-    void recognizeFaces(QList<Face>& faces, const QImage& imageToTld) const;
+    bool recognizeFaces(QList<Face>& faces, const QImage& imageToTld) const;
 
     /**
      * Returns the directory path of the config file

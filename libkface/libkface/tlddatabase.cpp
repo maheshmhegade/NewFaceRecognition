@@ -3,12 +3,7 @@
 namespace KFaceIface
 
 {
-void Tlddatabase::configureMain()
-{
-    main        = new Main();
-    config.configure(main);
-    srand(main->seed);
-}
+
 Tlddatabase::Tlddatabase()
 {
     this->openFaceDatabase();
@@ -47,15 +42,17 @@ void Tlddatabase::createFaceTable()
 }
 int  Tlddatabase::queryNumfacesinDatabase()
 {
-    QSqlQuery query(QString("select * from faceDatabase "));
-    return query.size();
+    QSqlTableModel query;
+    query.setTable("faceDatabase");
+    query.select();
+    return query.rowCount();
 }
 QString Tlddatabase::querybyFaceid(int faceid)
 {
     QSqlQuery query(QString("select * from faceDatabase where id = %1").arg(faceid));
     if (query.next())
     {
-        return query.value(2).toString();
+        return query.value(1).toString();
     }
 }
 
@@ -105,7 +102,8 @@ unitFaceModel *Tlddatabase::getFaceModel(int faceid)
     }
     return facemodel;
 }
-IplImage* Tlddatabase::QImage2IplImage(const QImage& qimg) const
+
+IplImage* Tlddatabase::QImage2IplImage(QImage& qimg)
 {
 
     IplImage* const imgHeader = cvCreateImageHeader(cvSize(qimg.width(), qimg.height()), IPL_DEPTH_8U, 4);
@@ -117,4 +115,5 @@ IplImage* Tlddatabase::QImage2IplImage(const QImage& qimg) const
 
     return imgHeader;
 }
+
 }

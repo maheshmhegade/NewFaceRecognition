@@ -2,21 +2,21 @@
 #include <sqlite3.h>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QSqlTableModel>
 #include <QDebug>
 #include <QObject>
 #include <QImage>
+#include <opencv/cv.h>
 
-#include "../../opentld/tldmain/Config.h"
+#include "Tldrecognition.h"
 
 using namespace std;
-using tld::Config;
+
 namespace KFaceIface
 {
+
 class Tlddatabase
 {
-public:
-    Main*  main;
-    Config config;
 public:
     Tlddatabase();
     void openFaceDatabase();
@@ -25,9 +25,8 @@ public:
     int  queryNumfacesinDatabase();
     QString querybyFaceid(int faceid);
     void insertFaceModel(unitFaceModel*);
-    void configureMain();
-    IplImage* QImage2IplImage(const QImage& qimg) const;
     unitFaceModel *getFaceModel(int faceid);
+    IplImage* QImage2IplImage(QImage&) ;
     ~Tlddatabase();
 
 private:

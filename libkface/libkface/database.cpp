@@ -52,7 +52,6 @@
 #include "image_p.h"
 
 using namespace std;
-using namespace libface;
 
 namespace KFaceIface
 {
@@ -180,8 +179,6 @@ Database::~Database()
 QList<Face> Database::detectFaces(const Image& image) const
 {
     const IplImage* const img = image.imageData();
-    //cvShowImage("show1",img );
-    cvWaitKey(0);
     CvSize originalSize       = cvSize(0,0);
 
     if (!image.originalSize().isNull())
@@ -218,45 +215,40 @@ bool Database::updateFaces(QList<Face>& faces, const QImage& ImageToTld) const
     Tlddatabase *tlddatabase = new Tlddatabase();
     foreach(Face face, faces)
     {
-        tlddatabase->configureMain();
-        int faceid;
-        if (false)//(faceid = this->querybyName(face.name())))//TODO:train/update existing facemodel or create newmodel  based on recognition accuracy
+        if(face.name() != NULL)
         {
-            unitFaceModel *facemodeltostore = new unitFaceModel;
-            unitFaceModel *existinmodel = tlddatabase->getFaceModel(faceid);
-            QImage facetotld = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
-                                               face.toFace().getWidth(),face.toFace().getHeight());
-            tlddatabase->main->learnandUpdate(facemodeltostore,existinmodel,tlddatabase->QImage2IplImage(facetotld));
-        }
-        else if(face.name() != NULL)//store the new face for first time
-        {
-            unitFaceModel *facemodeltostore;
-            QImage facetotld = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
-                                               face.toFace().getWidth(),face.toFace().getHeight());
-            facemodeltostore = tlddatabase->main->generateModel(tlddatabase->QImage2IplImage(facetotld));
+            QImage faceToTld               = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
+                                                             face.toFace().getWidth(),face.toFace().getHeight());
+            Tldrecognition* const tmpTLD = new Tldrecognition;
+            unitFaceModel *facemodeltostore = tmpTLD->getModeltoStore(tlddatabase->QImage2IplImage(faceToTld));
             facemodeltostore->Name = face.name();
             tlddatabase->insertFaceModel(facemodeltostore);
+            delete tmpTLD;
         }
     }
+    delete tlddatabase;
+    return true;
 }
-void Database::recognizeFaces(QList<Face>& faces, const QImage& imageToTld) const
+
+bool Database::recognizeFaces(QList<Face>& faces, const QImage& imageToTld) const
 {
     Tlddatabase *tlddatabase = new Tlddatabase();
     foreach(Face face, faces)
     {
         vector<float> recognitionconfidence;
-        QImage facetotld = imageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
-                                           face.toFace().getWidth(),face.toFace().getHeight());
-        IplImage *tmpfacetotld = tlddatabase->QImage2IplImage(facetotld);
+        QImage faceToTld = imageToTld.copy(face.toFace().getX1(),    face.toFace().getY1(),
+                                           face.toFace().getWidth(), face.toFace().getHeight());
+        IplImage *inputfaceimage = tlddatabase->QImage2IplImage(faceToTld);
         int count = -1;
-        for (int i=1 ;i < 3 ; i++ )//find recognition confidence with all facemodel in database
+        for (int i = 1; i <= tlddatabase->queryNumfacesinDatabase();i++ )
         {
-            tlddatabase->configureMain();
-            unitFaceModel *comparefacemodel = tlddatabase->getFaceModel(i);
-            recognitionconfidence.push_back(tlddatabase->main->getRecognitionConfidence(comparefacemodel,tlddatabase->QImage2IplImage(facetotld)));
-            count ++;
+            unitFaceModel *comparemodel = tlddatabase->getFaceModel(i);
+            Tldrecognition* const tmpTLD = new Tldrecognition;
+            recognitionconfidence.push_back(tmpTLD->getRecognitionConfidence(inputfaceimage,comparemodel));
+            delete tmpTLD;
+            count++;
         }
-        if(count != -1)//find maximum confidence index and set corresponding string
+        if(count != -1)
         {
             int maxConfIndex    = 0;
             float maxConfidence = recognitionconfidence[0];
@@ -271,10 +263,12 @@ void Database::recognizeFaces(QList<Face>& faces, const QImage& imageToTld) cons
             }
             if(maxConfidence > 0.6 )
             {
-                face.setName(tlddatabase->querybyFaceid(maxConfIndex));
+                face.setName(tlddatabase->querybyFaceid(maxConfIndex+1));
             }
         }
     }
+    delete tlddatabase;
+    return true;
 }
 
 void Database::clearTraining(const QString& name)

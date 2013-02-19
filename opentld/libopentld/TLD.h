@@ -31,7 +31,7 @@
 
 #include "MedianFlowTracker.h"
 #include "DetectorCascade.h"
-#include "../../libkface/libkface/Tldfaces.h"
+#include "../../libkface/libkface/tldface.h"
 using namespace KFaceIface;
 
 namespace tld
@@ -66,22 +66,8 @@ public:
     void release();
     void selectObject(const cv::Mat &img, cv::Rect *bb);
     void processImage(const cv::Mat &img);
-    void writeToFile(const char *path);
-    void readFromFile(const char *path);
     void getObjModel(unitFaceModel *);
     unitFaceModel *putObjModel();
-    void copyData(float *arrayOne,float dataone,float datatwo,float datathree,float datafour)
-    {
-        arrayOne[0] = dataone;arrayOne[1] = datatwo;arrayOne[2] = datathree;arrayOne[3] = datafour;
-    }
-    void copyData(int * arrayOne,int dataone,int datatwo,int datathree)
-    {
-        arrayOne[0] = dataone;arrayOne[1] = datatwo;arrayOne[2] = datathree;
-    }
-    void copyData(float *arrayOne,const float *arrayTwo)
-    {
-        arrayOne[0] = arrayTwo[0];arrayOne[1] = arrayTwo[1];arrayOne[2] = arrayTwo[2];arrayOne[3] = arrayTwo[3];
-    }
 };
 
 } /* namespace tld */

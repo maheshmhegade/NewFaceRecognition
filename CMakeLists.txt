@@ -191,7 +191,8 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/version.h.cmake ${CMAKE_CURRENT_BINAR
 
 SET(kface_LIB_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/database.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/tlddatabase.cpp
-                   ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/Tldfaces.cpp
+                   ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/tldface.cpp
+                   ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/Tldrecognition.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/face.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/kfaceutils.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/image.cpp
