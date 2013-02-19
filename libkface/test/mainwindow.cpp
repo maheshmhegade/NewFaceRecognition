@@ -113,9 +113,9 @@ MainWindow::MainWindow(QWidget* const parent)
     connect(d->ui->horizontalSlider, SIGNAL(valueChanged(int)),
             this, SLOT(updateAccuracy()));
 
-    d->myScene                   = new QGraphicsScene();
+    d->myScene                = new QGraphicsScene();
     QGridLayout* const layout = new QGridLayout;
-    d->myView                    = new QGraphicsView(d->myScene);
+    d->myView                 = new QGraphicsView(d->myScene);
 
     d->myView->setCacheMode(QGraphicsView::CacheBackground);
     d->myScene->setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -127,7 +127,7 @@ MainWindow::MainWindow(QWidget* const parent)
 
     d->myView->show();
 
-    d->database = new Database(Database::InitAll, ".");
+    d->database         = new Database(Database::InitAll, ".");
 
     d->ui->configLocation->setText(QDir::currentPath());
     d->ui->horizontalSlider->setValue(d->database->detectionAccuracy());
@@ -172,8 +172,8 @@ void MainWindow::openImage()
     kDebug() << "Opened file " << file.toAscii().data();
 
     QPixmap* const photo = new QPixmap(file);
-    d->lastPhotoItem        = new QGraphicsPixmapItem(*photo);
-    d->currentPhoto         = photo->toImage();
+    d->lastPhotoItem     = new QGraphicsPixmapItem(*photo);
+    d->currentPhoto      = photo->toImage();
 
     if(1.0*d->ui->widget->width()/photo->width() < 1.*d->ui->widget->height()/photo->height())
     {
@@ -267,9 +267,9 @@ void MainWindow::clearScene()
 
 void MainWindow::recognise()
 {
-
     if(!d->database->recognizeFaces(d->currentFaces,d->currentPhoto))
         return;
+
     for(int i = 0; i < d->currentFaces.size(); ++i)
     {
         d->faceitems[i]->suggest(d->currentFaces[i].name());

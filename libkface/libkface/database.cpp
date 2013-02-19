@@ -212,42 +212,47 @@ QList<Face> Database::detectFaces(const Image& image) const
 
 bool Database::updateFaces(QList<Face>& faces, const QImage& ImageToTld) const
 {
-    Tlddatabase *tlddatabase = new Tlddatabase();
+    Tlddatabase* const tlddatabase = new Tlddatabase();
+
     foreach(Face face, faces)
     {
         if(face.name() != NULL)
         {
-            QImage faceToTld               = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
-                                                             face.toFace().getWidth(),face.toFace().getHeight());
-            Tldrecognition* const tmpTLD = new Tldrecognition;
+            QImage faceToTld                = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
+                                                              face.toFace().getWidth(),face.toFace().getHeight());
+            Tldrecognition* const tmpTLD    = new Tldrecognition;
             unitFaceModel *facemodeltostore = tmpTLD->getModeltoStore(tlddatabase->QImage2IplImage(faceToTld));
-            facemodeltostore->Name = face.name();
+            facemodeltostore->Name          = face.name();
             tlddatabase->insertFaceModel(facemodeltostore);
             delete tmpTLD;
         }
     }
+
     delete tlddatabase;
     return true;
 }
 
 bool Database::recognizeFaces(QList<Face>& faces, const QImage& imageToTld) const
 {
-    Tlddatabase *tlddatabase = new Tlddatabase();
+    Tlddatabase* const tlddatabase = new Tlddatabase();
+
     foreach(Face face, faces)
     {
         vector<float> recognitionconfidence;
-        QImage faceToTld = imageToTld.copy(face.toFace().getX1(),    face.toFace().getY1(),
-                                           face.toFace().getWidth(), face.toFace().getHeight());
-        IplImage *inputfaceimage = tlddatabase->QImage2IplImage(faceToTld);
-        int count = -1;
+        QImage faceToTld               = imageToTld.copy(face.toFace().getX1(),    face.toFace().getY1(),
+                                                         face.toFace().getWidth(), face.toFace().getHeight());
+        IplImage* const inputfaceimage = tlddatabase->QImage2IplImage(faceToTld);
+        int count                      = -1;
+
         for (int i = 1; i <= tlddatabase->queryNumfacesinDatabase();i++ )
         {
-            unitFaceModel *comparemodel = tlddatabase->getFaceModel(i);
-            Tldrecognition* const tmpTLD = new Tldrecognition;
+            unitFaceModel* const comparemodel = tlddatabase->getFaceModel(i);
+            Tldrecognition* const tmpTLD      = new Tldrecognition;
             recognitionconfidence.push_back(tmpTLD->getRecognitionConfidence(inputfaceimage,comparemodel));
             delete tmpTLD;
             count++;
         }
+
         if(count != -1)
         {
             int maxConfIndex    = 0;
@@ -261,12 +266,14 @@ bool Database::recognizeFaces(QList<Face>& faces, const QImage& imageToTld) cons
                     maxConfidence = recognitionconfidence[tmpInt];
                 }
             }
+
             if(maxConfidence > 0.6 )
             {
                 face.setName(tlddatabase->querybyFaceid(maxConfIndex+1));
             }
         }
     }
+
     delete tlddatabase;
     return true;
 }

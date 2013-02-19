@@ -37,9 +37,13 @@ using namespace std;
 
 namespace KFaceIface
 {
+
 unitFaceModel::unitFaceModel()
 {
+}
 
+unitFaceModel::~unitFaceModel()
+{
 }
 
 void unitFaceModel::serialisePositivePatches(const QList<QList<float> >& allPositivePatches)
@@ -55,6 +59,7 @@ void unitFaceModel::serialisePositivePatches(const QList<QList<float> >& allPosi
 
     serialisedPositivePatches = QString(byteArray.toBase64());
 }
+
 void unitFaceModel::serialiseNegativePatches(const QList<QList<float> >& allNegativePatches)
 {
     QByteArray byteArray;
@@ -68,6 +73,7 @@ void unitFaceModel::serialiseNegativePatches(const QList<QList<float> >& allNega
 
     serialisedNegativePatches = QString(byteArray.toBase64());
 }
+
 void unitFaceModel::serialiseFeatures(const QList<QList<QList<float> > >& allFeatures)
 {
     QByteArray byteArray;
@@ -81,6 +87,7 @@ void unitFaceModel::serialiseFeatures(const QList<QList<QList<float> > >& allFea
 
     serialisedFeatures = QString(byteArray.toBase64());
 }
+
 void unitFaceModel::serialiseLeaves(const QList<QList<QList<int> > >& allLeaves)
 {
     QByteArray byteArray;
@@ -95,7 +102,7 @@ void unitFaceModel::serialiseLeaves(const QList<QList<QList<int> > >& allLeaves)
     serialisedLeaves = QString(byteArray.toBase64());
 }
 
-QList<QList<float> > unitFaceModel::deserialisePositivePatches()
+QList<QList<float> > unitFaceModel::deserialisePositivePatches() const
 {
     QByteArray readArr = QByteArray::fromBase64( this->serialisedPositivePatches.toAscii());
     QBuffer readBuffer(&readArr);
@@ -107,7 +114,7 @@ QList<QList<float> > unitFaceModel::deserialisePositivePatches()
     return allPositivePatches;
 }
 
-QList<QList<float> > unitFaceModel::deserialiseNegativePatches()
+QList<QList<float> > unitFaceModel::deserialiseNegativePatches() const
 {
     QByteArray readArr = QByteArray::fromBase64( serialisedNegativePatches.toAscii());
     QBuffer readBuffer(&readArr);
@@ -120,7 +127,8 @@ QList<QList<float> > unitFaceModel::deserialiseNegativePatches()
 
     return allNegativePatches;
 }
-QList<QList<QList<float> > > unitFaceModel::deserialiseFeatures()
+
+QList<QList<QList<float> > > unitFaceModel::deserialiseFeatures() const
 {
     QByteArray readArr = QByteArray::fromBase64( serialisedFeatures.toAscii());
     QBuffer readBuffer(&readArr);
@@ -133,11 +141,8 @@ QList<QList<QList<float> > > unitFaceModel::deserialiseFeatures()
 
     return allFeatures;
 }
-unitFaceModel::~unitFaceModel()
-{
 
-}
-QList<QList<QList<int> > > unitFaceModel::deserialiseLeaves()
+QList<QList<QList<int> > > unitFaceModel::deserialiseLeaves() const
 {
     QByteArray readArr = QByteArray::fromBase64( serialisedLeaves.toAscii());
     QBuffer readBuffer(&readArr);
@@ -150,4 +155,5 @@ QList<QList<QList<int> > > unitFaceModel::deserialiseLeaves()
 
     return allLeaves;
 }
+
 } // namespace libface

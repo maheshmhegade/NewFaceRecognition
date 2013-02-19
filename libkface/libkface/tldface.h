@@ -30,43 +30,49 @@
  *
  * ============================================================ */
 
+// C++ includes
+
 #include <iostream>
+
+// Qt includes
+
 #include <QList>
 #include <QBuffer>
 #include <QVariant>
 
-
 namespace KFaceIface
 {
+
 class unitFaceModel
 {
 public:
+
     unitFaceModel();
-
-    int faceid;
-
-    QString Name;
-
-    int objHeight;
-
-    int objWidth;
-
-    float minVar;
-
-    QString serialisedPositivePatches;
-    QString serialisedNegativePatches;
-    QString serialisedFeatures;
-    QString serialisedLeaves;
+    ~unitFaceModel();
 
     void serialisePositivePatches(const QList<QList<float> >&);
     void serialiseNegativePatches(const QList<QList<float> >&);
     void serialiseFeatures(const QList<QList<QList<float> > >&);
     void serialiseLeaves(const QList<QList<QList<int> > >&);
-    QList<QList<float> > deserialisePositivePatches();
-    QList<QList<float> >  deserialiseNegativePatches();
-    QList<QList<QList<float> > > deserialiseFeatures();
-    QList<QList<QList<int> > > deserialiseLeaves();
-    ~unitFaceModel();
-};
-} // namespace libface
 
+    QList<QList<float> > deserialisePositivePatches()  const;
+    QList<QList<float> >  deserialiseNegativePatches() const;
+    QList<QList<QList<float> > > deserialiseFeatures() const;
+    QList<QList<QList<int> > > deserialiseLeaves()     const;
+
+public:
+
+    QString serialisedPositivePatches;
+    QString serialisedNegativePatches;
+    QString serialisedFeatures;
+    QString serialisedLeaves;
+    QString Name;
+
+    int     faceid;
+    int     objHeight;
+    int     objWidth;
+
+    float   minVar;
+};
+
+} // namespace libface

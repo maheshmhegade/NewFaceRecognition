@@ -54,7 +54,7 @@ public:
 Tldrecognition::Tldrecognition()
     : d(new Private)
 {
-    d->main        = new Main();
+    d->main = new Main();
     d->config.configure(d->main);
     srand(d->main->seed);
 }
@@ -65,12 +65,12 @@ Tldrecognition::~Tldrecognition()
     delete d;
 }
 
-unitFaceModel *Tldrecognition::getModeltoStore(IplImage* const inputImage) const
+unitFaceModel* Tldrecognition::getModeltoStore(IplImage* const inputImage) const
 {
     return d->main->generatefacemodel(inputImage);
 }
 
-float Tldrecognition::getRecognitionConfidence(IplImage* const inputImage, unitFaceModel *comparemodel) const
+float Tldrecognition::getRecognitionConfidence(IplImage* const inputImage, unitFaceModel* const comparemodel) const
 {
     return d->main->getrecognitionconfidence(inputImage, comparemodel);
 }
@@ -81,4 +81,4 @@ int Tldrecognition::updateDatabase(IplImage* const /*inputImage*/, const char* c
     return 0;
 }
 
-} // namespace libface
+} // namespace KFaceIface

@@ -147,6 +147,7 @@ QExplicitlySharedDataPointer<RecognitionDatabase::Private> RecognitionDatabaseSt
             it.value()->ref.deref(); // We incremented above
             return p;
         }
+
         /* if the original value is 0, it is currently being deleted, but it must be
          * safe to access it, because the destructor has not yet completed - otherwise it'd not be in the hash.
          */

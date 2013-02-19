@@ -41,10 +41,10 @@
 using namespace tld;
 using           tld::Config;
 using           tld::Settings;
-using namespace KFaceIface;
 
 namespace KFaceIface
 {
+
 class Tldrecognition
 {
 public:
@@ -52,13 +52,16 @@ public:
     Tldrecognition();
    ~Tldrecognition();
 
-    unitFaceModel *getModeltoStore(IplImage* const)         const;
-    int       updateDatabase(IplImage* const, const char* const)           const;
-    float     getRecognitionConfidence(IplImage* const, unitFaceModel *comparemodel) const;
+    unitFaceModel* getModeltoStore(IplImage* const) const;
+
+    int updateDatabase(IplImage* const, const char* const) const;
+
+    float getRecognitionConfidence(IplImage* const, unitFaceModel* const comparemodel) const;
+
 private:
 
     class Private;
     Private* const d;
 };
 
-} // namespace libface
+} // namespace KFaceIface
