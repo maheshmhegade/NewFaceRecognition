@@ -54,6 +54,8 @@ QString Tlddatabase::querybyFaceid(int faceid)
     {
         return query.value(1).toString();
     }
+
+    return QString();
 }
 
 int Tlddatabase::querybyName(QString nametoquery)
@@ -63,6 +65,8 @@ int Tlddatabase::querybyName(QString nametoquery)
     {
         return query.value(1).toInt();
     }
+
+    return -1;
 }
 
 void Tlddatabase::insertFaceModel(unitFaceModel *facemodel)

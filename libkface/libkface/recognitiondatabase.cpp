@@ -214,11 +214,11 @@ bool RecognitionDatabase::updateFaces(QList<Face>& faces)
 bool RecognitionDatabase::recognizeFaces(QList<Face>& faces)
 {
     if (!d)
-        QList<double>();
+        return false;
 
     QMutexLocker lock(&d->mutex);
     QImage dummyImage;
-    d->database()->recognizeFaces(faces,dummyImage);
+    return d->database()->recognizeFaces(faces,dummyImage);
 }
 
 void RecognitionDatabase::saveConfig()
