@@ -220,8 +220,11 @@ bool Database::updateFaces(QList<Face>& faces, const QImage& ImageToTld) const
         {
             QImage faceToTld                = ImageToTld.copy(face.toFace().getX1(),face.toFace().getY1(),
                                                               face.toFace().getWidth(),face.toFace().getHeight());
+            IplImage * const tmpface = tlddatabase->QImage2IplImage(faceToTld);
+            IplImage* const inputfaceimage = cvCreateImage(cvSize(47,47),tmpface->depth,tmpface->nChannels);
+            cvResize(tmpface,inputfaceimage);
             Tldrecognition* const tmpTLD    = new Tldrecognition;
-            unitFaceModel *facemodeltostore = tmpTLD->getModeltoStore(tlddatabase->QImage2IplImage(faceToTld));
+            unitFaceModel *facemodeltostore = tmpTLD->getModeltoStore(inputfaceimage);
             facemodeltostore->Name          = face.name();
             tlddatabase->insertFaceModel(facemodeltostore);
             delete tmpTLD;
@@ -241,7 +244,9 @@ bool Database::recognizeFaces(QList<Face>& faces, const QImage& imageToTld) cons
         vector<float> recognitionconfidence;
         QImage faceToTld               = imageToTld.copy(face.toFace().getX1(),    face.toFace().getY1(),
                                                          face.toFace().getWidth(), face.toFace().getHeight());
-        IplImage* const inputfaceimage = tlddatabase->QImage2IplImage(faceToTld);
+        IplImage * const tmpface = tlddatabase->QImage2IplImage(faceToTld);
+        IplImage* const inputfaceimage = cvCreateImage(cvSize(47,47),tmpface->depth,tmpface->nChannels);
+        cvResize(tmpface,inputfaceimage);
         int count                      = -1;
 
         for (int i = 1; i <= tlddatabase->queryNumfacesinDatabase();i++ )

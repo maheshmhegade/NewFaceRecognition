@@ -29,6 +29,7 @@
 
 #include "NNClassifier.h"
 #include "TLDUtil.h"
+#include <opencv/highgui.h>
 
 using namespace std;
 using namespace cv;
@@ -130,13 +131,11 @@ void TLD::fuseHypotheses()
     int numClusters = detectorCascade->detectionResult->numClusters;
     Rect *detectorBB = detectorCascade->detectionResult->detectorBB;
 
-
     currBB = NULL;
     currConf = 0;
     valid = false;
 
     float confDetector = 0;
-
     if(numClusters == 1)
     {
         confDetector = nnClassifier->classifyBB(currImg, detectorBB);
@@ -145,7 +144,6 @@ void TLD::fuseHypotheses()
     if(trackerBB != NULL)
     {
         float confTracker = nnClassifier->classifyBB(currImg, trackerBB);
-
         if(numClusters == 1 && confDetector > confTracker && tldOverlapRectRect(*trackerBB, *detectorBB) < 0.5)
         {
 
@@ -172,7 +170,6 @@ void TLD::fuseHypotheses()
         currBB = tldCopyRect(detectorBB);
         currConf = confDetector;
     }
-
     /*
     float var = CalculateVariance(patch.values, nn->patch_size*nn->patch_size);
 
@@ -518,7 +515,6 @@ unitFaceModel *TLD::putObjModel()
         }
         allLeaves.append(unitLeave);
     }
-    cout << "came here" <<endl;
     faceModel->serialiseFeatures(allFeatures);
     faceModel->serialiseLeaves(allLeaves);
     return faceModel;
