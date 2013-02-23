@@ -198,6 +198,7 @@ SET(kface_LIB_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/database.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/image.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/facedetector.cpp
                    ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/recognitiondatabase.cpp
+                   ${CMAKE_CURRENT_SOURCE_DIR}/libkface/libkface/tldclassify.cpp
    )
 INCLUDE_DIRECTORIES(/usr/lib/qt4)
 KDE4_ADD_LIBRARY(kface SHARED ${kface_LIB_SRCS} ${face_LIB_SRCS})
