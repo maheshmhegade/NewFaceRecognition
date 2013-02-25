@@ -388,7 +388,7 @@ pair<int, float> Eigenfaces::recognize(IplImage* const input)
         cvCalcEigenObjects(2, &tempFaces.front(), eigenObjects, CV_EIGOBJ_NO_CALLBACK, 0, NULL, &mycrit, pAvgTrainImg, eigenValues);
 
         //This is a simple min distance mechanism for recognition. Perhaps we should check similarity of images.
-        if(eigenValues[0] < minDist)
+        if(eigenValues[0] && eigenValues[0] < minDist)
         {
             minDist = eigenValues[0];
             id      = j;
